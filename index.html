@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nakshatrika — Align Your Wealth With The Stars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --saffron: #E8650A;
+  --saffron-light: #F5831F;
+  --saffron-glow: rgba(232,101,10,0.15);
+  --navy: #0A1628;
+  --navy-mid: #0F1E35;
+  --navy-light: #162340;
+  --gold: #C9A84C;
+  --gold-light: #E2C06A;
+  --gold-dim: rgba(201,168,76,0.2);
+  --cream: #F5EDD8;
+  --cream-dim: rgba(245,237,216,0.08);
+  --text-primary: #F0E6CC;
+  --text-muted: rgba(240,230,204,0.5);
+  --text-dim: rgba(240,230,204,0.25);
+  --border: rgba(201,168,76,0.15);
+  --border-bright: rgba(201,168,76,0.35);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--navy);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s;
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transition: all 0.15s ease;
+}
+
+/* Star field background */
+.starfield {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.star {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes twinkle {
+  0%, 100% { opacity: var(--min-op, 0.1); transform: scale(1); }
+  50% { opacity: var(--max-op, 0.8); transform: scale(1.3); }
+}
+
+/* Mandala background */
+.mandala-bg {
+  position: fixed;
+  width: 900px; height: 900px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+  animation: slowRotate 120s linear infinite;
+}
+@keyframes slowRotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+/* Nav */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 20px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(180deg, rgba(10,22,40,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(8px);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  position: relative;
+}
+.nav-logo-icon svg { width: 100%; height: 100%; }
+.nav-logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--cream);
+}
+.nav-logo-text span { color: var(--gold); }
+.nav-links {
+  display: flex; align-items: center; gap: 36px;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--gold-light); }
+.nav-cta {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.nav-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--gold);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: -1;
+}
+.nav-cta:hover::before { transform: translateX(0); }
+.nav-cta:hover { color: var(--navy); }
+
+/* HERO */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding: 120px 48px 80px;
+  z-index: 1;
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px;
+}
+.eyebrow-line { width: 40px; height: 1px; background: var(--gold); }
+.eyebrow-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 400;
+}
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 28px;
+  color: var(--cream);
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+.hero h1 .accent {
+  color: var(--saffron);
+  font-weight: 600;
+  font-style: normal;
+}
+.hero-desc {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin-bottom: 48px;
+}
+.hero-actions {
+  display: flex; align-items: center; gap: 24px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--saffron), var(--saffron-light));
+  color: white;
+  padding: 16px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: none;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 8px 32px rgba(232,101,10,0.3);
+}
+.btn-primary:hover {
+  box-shadow: 0 12px 48px rgba(232,101,10,0.5);
+  transform: translateY(-2px);
+}
+.btn-ghost {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+  transition: color 0.3s;
+  cursor: none;
+}
+.btn-ghost:hover { color: var(--cream); }
+.btn-ghost svg { transition: transform 0.3s; }
+.btn-ghost:hover svg { transform: translateX(4px); }
+
+/* Hero right — Yantra visualization */
+.hero-visual {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  height: 560px;
+}
+.yantra-container {
+  position: relative;
+  width: 460px; height: 460px;
+}
+.yantra-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ringPulse 4s ease-in-out infinite;
+}
+@keyframes ringPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+.yantra-ring:nth-child(1) { width: 100%; height: 100%; border-color: rgba(201,168,76,0.15); animation-delay: 0s; }
+.yantra-ring:nth-child(2) { width: 80%; height: 80%; border-color: rgba(201,168,76,0.2); animation-delay: 0.5s; }
+.yantra-ring:nth-child(3) { width: 60%; height: 60%; border-color: rgba(201,168,76,0.3); animation-delay: 1s; }
+.yantra-ring:nth-child(4) { width: 40%; height: 40%; border-color: rgba(232,101,10,0.4); animation-delay: 1.5s; }
+
+.yantra-svg {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 420px; height: 420px;
+  animation: slowRotate 60s linear infinite;
+}
+
+/* Floating nakshatra pods */
+.nakshatra-pod {
+  position: absolute;
+  background: rgba(15,30,53,0.9);
+  border: 1px solid var(--border);
+  padding: 14px 18px;
+  min-width: 160px;
+  backdrop-filter: blur(12px);
+  animation: floatPod 4s ease-in-out infinite;
+}
+@keyframes floatPod {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.nakshatra-pod:nth-child(6) { top: 8%; left: -10%; animation-delay: 0s; }
+.nakshatra-pod:nth-child(7) { top: 20%; right: -8%; animation-delay: 1s; }
+.nakshatra-pod:nth-child(8) { bottom: 20%; left: -8%; animation-delay: 2s; }
+.nakshatra-pod:nth-child(9) { bottom: 8%; right: -5%; animation-delay: 0.5s; }
+.pod-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+.pod-value { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--cream); }
+.pod-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Center circle */
+.yantra-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(232,101,10,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  border: 1px solid rgba(232,101,10,0.3);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+.center-nakshatra {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  color: var(--gold-light);
+  line-height: 1.3;
+}
+.center-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+
+/* Stats bar */
+.stats-bar {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 0;
+  margin: 0;
+  background: rgba(15,30,53,0.4);
+  position: relative; z-index: 1;
+}
+.stats-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+.stat-item {
+  text-align: center;
+  padding: 0 24px;
+  position: relative;
+}
+.stat-item + .stat-item::before {
+  content: '';
+  position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 1px; background: var(--border);
+}
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--gold-light);
+  display: block;
+}
+.stat-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+/* SECTION COMMONS */
+section {
+  position: relative; z-index: 1;
+  padding: 100px 48px;
+}
+.section-inner { max-width: 1200px; margin: 0 auto; }
+.section-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3.5vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--cream);
+  margin-bottom: 20px;
+}
+.section-title em { font-style: italic; color: var(--gold-light); }
+
+/* FEATURES */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 64px;
+  background: var(--border);
+}
+.feature-card {
+  background: var(--navy-mid);
+  padding: 48px 36px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+.feature-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--saffron-glow) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.feature-card:hover { background: var(--navy-light); }
+.feature-card:hover::before { opacity: 1; }
+.feature-icon {
+  width: 52px; height: 52px;
+  margin-bottom: 28px;
+  position: relative;
+}
+.feature-num {
+  position: absolute; top: 0; right: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 4rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  line-height: 1;
+  pointer-events: none;
+}
+.feature-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--cream);
+  margin-bottom: 14px;
+}
+.feature-desc {
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+.feature-tag {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* APP SCREENS SHOWCASE */
+.app-showcase {
+  background: var(--navy-mid);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.showcase-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+.phones-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 24px;
+  perspective: 1000px;
+}
+.phone-frame {
+  width: 260px;
+  background: var(--navy);
+  border-radius: 40px;
+  border: 1px solid var(--border-bright);
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.05);
+  position: relative;
+  flex-shrink: 0;
+}
+.phone-frame.center {
+  width: 280px;
+  border-color: var(--gold);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 60px rgba(201,168,76,0.1);
+  transform: translateY(-20px);
+}
+.phone-frame.left { transform: rotate(-6deg) translateY(20px); }
+.phone-frame.right { transform: rotate(6deg) translateY(20px); }
+.phone-notch {
+  height: 28px;
+  background: var(--navy-mid);
+  display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--border);
+}
+.phone-notch-pill {
+  width: 80px; height: 10px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 10px;
+}
+.phone-screen { padding: 16px; min-height: 500px; }
+
+/* Screen 1: Dashboard */
+.screen-dashboard {
+  background: linear-gradient(180deg, #0A1628 0%, #0F1E35 100%);
+}
+.dash-header { margin-bottom: 16px; }
+.dash-greeting { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); }
+.dash-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--cream); }
+.dash-today {
+  background: linear-gradient(135deg, rgba(232,101,10,0.15), rgba(201,168,76,0.1));
+  border: 1px solid rgba(232,101,10,0.3);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.dash-today-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--saffron); }
+.dash-today-title { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--cream); margin: 4px 0 2px; }
+.dash-today-time { font-size: 0.7rem; color: var(--text-muted); }
+.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.dash-tile {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+.dash-tile-icon { font-size: 1.2rem; margin-bottom: 6px; }
+.dash-tile-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.dash-tile-val { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; color: var(--cream); }
+.dash-upcoming { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.dash-event {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.dash-event-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+.dash-event-text { font-size: 0.68rem; color: var(--text-muted); flex: 1; }
+.dash-event-time { font-size: 0.62rem; color: var(--gold); }
+.dash-bottom-nav {
+  display: flex; justify-content: space-around;
+  padding: 12px 0 4px;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+.dash-nav-icon { text-align: center; }
+.dash-nav-icon span { font-size: 1rem; display: block; }
+.dash-nav-icon p { font-size: 0.5rem; color: var(--text-dim); margin-top: 2px; }
+.dash-nav-icon.active p { color: var(--gold); }
+.dash-nav-icon.active span { filter: none; }
+
+/* Screen 2: Muhurat Calendar */
+.screen-calendar { background: var(--navy); }
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.cal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--cream); }
+.cal-month { font-size: 0.65rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 14px; }
+.cal-day-name { font-size: 0.55rem; text-align: center; color: var(--text-dim); text-transform: uppercase; padding-bottom: 6px; }
+.cal-day {
+  aspect-ratio: 1;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem;
+  border-radius: 50%;
+  color: var(--text-muted);
+  position: relative;
+}
+.cal-day.shubh { background: rgba(201,168,76,0.15); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.cal-day.rahu { background: rgba(200,50,50,0.1); color: rgba(255,100,100,0.6); }
+.cal-day.today { background: var(--saffron); color: white; border-radius: 50%; }
+.cal-day.muhurat::after {
+  content: '';
+  position: absolute; bottom: 1px;
+  width: 3px; height: 3px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+.cal-legend { display: flex; gap: 10px; margin-bottom: 14px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.58rem; color: var(--text-muted); }
+.legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+.cal-event-list { }
+.cal-event-item {
+  display: flex; gap: 10px;
+  padding: 10px;
+  background: rgba(201,168,76,0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.cal-event-date { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: var(--gold); line-height: 1; }
+.cal-event-month { font-size: 0.55rem; color: var(--text-dim); text-transform: uppercase; }
+.cal-event-name { font-size: 0.72rem; color: var(--cream); margin-bottom: 3px; }
+.cal-event-desc { font-size: 0.6rem; color: var(--text-muted); }
+
+/* Screen 3: Kundli Profile */
+.screen-kundli { background: linear-gradient(180deg, #0A1628 0%, #070F1E 100%); }
+.kundli-chart {
+  aspect-ratio: 1;
+  border: 1px solid var(--border-bright);
+  position: relative;
+  margin-bottom: 14px;
+  background: rgba(201,168,76,0.02);
+}
+.kundli-inner {
+  position: absolute;
+  inset: 20%;
+  border: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+.kundli-center {
+  position: absolute;
+  inset: 40%;
+  border: 1px solid rgba(232,101,10,0.3);
+  display: flex; align-items: center; justify-content: center;
+  transform: rotate(45deg);
+}
+.kundli-center-text {
+  transform: rotate(-45deg);
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.7rem;
+  color: var(--gold);
+}
+.kundli-house {
+  position: absolute;
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  font-family: 'Cormorant Garamond', serif;
+}
+.kundli-planet {
+  font-size: 0.65rem;
+  color: var(--saffron);
+  font-family: 'Cormorant Garamond', serif;
+}
+.kundli-house.h1 { top: 8px; left: 50%; transform: translateX(-50%); }
+.kundli-house.h2 { top: 25%; right: 8px; }
+.kundli-house.h3 { bottom: 25%; right: 8px; }
+.kundli-house.h4 { bottom: 8px; left: 50%; transform: translateX(-50%); }
+.kundli-house.h7 { top: 50%; left: 8px; transform: translateY(-50%); }
+.kundli-diag { position: absolute; inset: 0; }
+.kundli-diag svg { width: 100%; height: 100%; }
+.profile-traits { display: flex; flex-direction: column; gap: 8px; }
+.trait-row { display: flex; align-items: center; gap: 10px; }
+.trait-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; width: 60px; flex-shrink: 0; }
+.trait-bar-bg { flex: 1; height: 3px; background: rgba(255,255,255,0.05); border-radius: 2px; }
+.trait-bar { height: 100%; background: linear-gradient(90deg, var(--gold), var(--saffron)); border-radius: 2px; }
+.trait-val { font-size: 0.6rem; color: var(--gold); width: 28px; text-align: right; }
+
+/* MUHURAT TABLE */
+.muhurat-section { background: var(--navy); }
+.table-wrap {
+  margin-top: 64px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.muhurat-table { width: 100%; border-collapse: collapse; }
+.muhurat-table th {
+  padding: 18px 24px;
+  text-align: left;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(201,168,76,0.05);
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+}
+.muhurat-table td {
+  padding: 18px 24px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(201,168,76,0.07);
+  vertical-align: middle;
+}
+.muhurat-table tr:last-child td { border-bottom: none; }
+.muhurat-table tr:hover td { background: rgba(201,168,76,0.03); }
+.muhurat-date { font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--cream); }
+.muhurat-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+.badge-gold { border-color: var(--gold); color: var(--gold); }
+.badge-saffron { border-color: var(--saffron); color: var(--saffron); }
+.badge-muted { border-color: var(--border); color: var(--text-muted); }
+.muhurat-actions { display: flex; gap: 8px; }
+.muhurat-action-btn {
+  padding: 6px 14px;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: none;
+  transition: all 0.3s;
+}
+.muhurat-action-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* PRICING */
+.pricing-section { }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-top: 64px;
+  background: var(--border);
+}
+.pricing-card {
+  background: var(--navy-mid);
+  padding: 48px 36px;
+  position: relative;
+}
+.pricing-card.featured {
+  background: linear-gradient(180deg, rgba(232,101,10,0.08) 0%, var(--navy-mid) 100%);
+  border-top: 2px solid var(--saffron);
+}
+.pricing-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.pricing-card.featured .pricing-label { color: var(--saffron); }
+.pricing-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: var(--cream);
+  margin-bottom: 24px;
+}
+.pricing-amount {
+  margin-bottom: 32px;
+}
+.pricing-currency { font-size: 1rem; color: var(--text-muted); vertical-align: top; margin-top: 8px; display: inline-block; }
+.pricing-num { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; color: var(--cream); line-height: 1; }
+.pricing-period { font-size: 0.75rem; color: var(--text-muted); margin-left: 4px; }
+.pricing-features { list-style: none; margin-bottom: 36px; }
+.pricing-features li {
+  padding: 12px 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(201,168,76,0.07);
+  display: flex; align-items: center; gap: 10px;
+}
+.pricing-features li::before { content: '—'; color: var(--gold); font-size: 0.8rem; }
+.pricing-features li.included { color: var(--text-primary); }
+.pricing-btn {
+  width: 100%;
+  padding: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: none;
+  transition: all 0.3s;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+}
+.pricing-btn.primary {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: white;
+}
+.pricing-btn.primary:hover { background: var(--saffron-light); }
+.pricing-btn:not(.primary):hover { border-color: var(--gold); color: var(--gold); }
+
+/* TESTIMONIALS */
+.testimonials-section { background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--border);
+  margin-top: 64px;
+}
+.testimonial-card {
+  background: var(--navy-mid);
+  padding: 36px;
+}
+.testimonial-stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 20px; letter-spacing: 4px; }
+.testimonial-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--cream);
+  margin-bottom: 24px;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--saffron), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: white;
+}
+.author-name { font-size: 0.85rem; color: var(--cream); }
+.author-meta { font-size: 0.7rem; color: var(--text-muted); }
+
+/* FOOTER */
+footer {
+  padding: 80px 48px 40px;
+  border-top: 1px solid var(--border);
+  position: relative; z-index: 1;
+}
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+.footer-brand-text {
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+  margin-top: 16px;
+  max-width: 280px;
+}
+.footer-col-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--cream); }
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.footer-copy { font-size: 0.75rem; color: var(--text-dim); }
+.footer-legal { display: flex; gap: 24px; }
+.footer-legal a { font-size: 0.75rem; color: var(--text-dim); text-decoration: none; }
+.footer-disclaimer {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  grid-column: 1 / -1;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fadeInUp 0.8s ease forwards; opacity: 0; }
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.6s; }
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Rahu Kaal strip */
+.rahu-strip {
+  background: rgba(180,40,40,0.08);
+  border: 1px solid rgba(180,40,40,0.2);
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+  border-radius: 4px;
+}
+.rahu-dot { width: 6px; height: 6px; border-radius: 50%; background: #E53E3E; animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.rahu-text { font-size: 0.65rem; color: rgba(240,150,150,0.7); }
+
+/* Gradient decorations */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.orb-1 { width: 400px; height: 400px; background: rgba(232,101,10,0.08); top: -100px; right: -100px; }
+.orb-2 { width: 300px; height: 300px; background: rgba(201,168,76,0.06); bottom: -50px; left: -50px; }
+
+/* Marquee */
+.marquee-section {
+  padding: 20px 0;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: rgba(201,168,76,0.02);
+  position: relative; z-index: 1;
+}
+.marquee-track {
+  display: flex;
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+.marquee-item {
+  display: flex; align-items: center; gap: 32px;
+  padding: 0 32px;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.marquee-item .dot { color: var(--gold); }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* CTA section */
+.cta-section {
+  text-align: center;
+  padding: 120px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(232,101,10,0.08) 0%, transparent 70%);
+}
+.cta-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--cream);
+  margin-bottom: 24px;
+  position: relative;
+}
+.cta-title em { font-style: italic; color: var(--gold-light); }
+.cta-sub {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  position: relative;
+}
+.cta-store-btns {
+  display: flex; gap: 16px; justify-content: center;
+  position: relative;
+}
+.store-btn {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 28px;
+  border: 1px solid var(--border-bright);
+  background: rgba(255,255,255,0.03);
+  cursor: none;
+  transition: all 0.3s;
+}
+.store-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+.store-btn-icon { font-size: 1.6rem; }
+.store-btn-text { text-align: left; }
+.store-btn-sub { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.store-btn-name { font-size: 0.9rem; color: var(--cream); margin-top: 1px; }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 20px; }
+  .nav-links, .nav-cta { display: none; }
+  .hero { padding: 100px 20px 60px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { height: 360px; }
+  .yantra-container { width: 300px; height: 300px; }
+  .yantra-svg { width: 280px; height: 280px; }
+  .nakshatra-pod { display: none; }
+  section { padding: 60px 20px; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .features-grid, .pricing-grid, .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; gap: 30px; }
+  .phones-container { gap: 10px; }
+  .phone-frame { width: 180px; }
+  .phone-frame.center { width: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Starfield -->
+<div class="starfield" id="starfield"></div>
+
+<!-- Mandala SVG background -->
+<svg class="mandala-bg" viewBox="0 0 800 800" fill="none">
+  <circle cx="400" cy="400" r="350" stroke="#C9A84C" stroke-width="0.5"/>
+  <circle cx="400" cy="400" r="300" stroke="#C9A84C" stroke-width="0.5"/>
+  <circle cx="400" cy="400" r="250" stroke="#C9A84C" stroke-width="0.5"/>
+  <circle cx="400" cy="400" r="200" stroke="#C9A84C" stroke-width="0.5"/>
+  <circle cx="400" cy="400" r="150" stroke="#C9A84C" stroke-width="0.5"/>
+  <circle cx="400" cy="400" r="100" stroke="#C9A84C" stroke-width="0.5"/>
+  <line x1="50" y1="400" x2="750" y2="400" stroke="#C9A84C" stroke-width="0.5"/>
+  <line x1="400" y1="50" x2="400" y2="750" stroke="#C9A84C" stroke-width="0.5"/>
+  <line x1="153" y1="153" x2="647" y2="647" stroke="#C9A84C" stroke-width="0.5"/>
+  <line x1="647" y1="153" x2="153" y2="647" stroke="#C9A84C" stroke-width="0.5"/>
+  <polygon points="400,80 680,560 120,560" stroke="#C9A84C" stroke-width="0.5" fill="none"/>
+  <polygon points="400,720 120,240 680,240" stroke="#C9A84C" stroke-width="0.5" fill="none"/>
+  <polygon points="400,100 655,555 145,555" stroke="#C9A84C" stroke-width="0.3" fill="none"/>
+  <polygon points="400,700 145,245 655,245" stroke="#C9A84C" stroke-width="0.3" fill="none"/>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="17" stroke="#C9A84C" stroke-width="0.8"/>
+        <circle cx="18" cy="18" r="11" stroke="#C9A84C" stroke-width="0.5"/>
+        <polygon points="18,4 31,27 5,27" stroke="#E8650A" stroke-width="1" fill="none"/>
+        <polygon points="18,32 5,9 31,9" stroke="#C9A84C" stroke-width="0.8" fill="none"/>
+        <circle cx="18" cy="18" r="3" fill="#C9A84C"/>
+      </svg>
+    </div>
+    <span class="nav-logo-text">Naksha<span>trika</span></span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#muhurat">Muhurat</a></li>
+    <li><a href="#pricing">Plans</a></li>
+    <li><a href="app.html">Open App</a></li>
+  </ul>
+  <button class="nav-cta" onclick="window.location.href='app.html'">Begin Your Journey</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-content">
+      <div class="hero-eyebrow animate-in">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Ancient Wisdom · Modern Wealth</span>
+      </div>
+      <h1 class="animate-in delay-1">
+        Align Your<br>
+        <em>Wealth</em> With<br>
+        The <span class="accent">Stars</span>
+      </h1>
+      <p class="hero-desc animate-in delay-2">
+        India's first astro-finance platform that overlays Vedic muhurat timing onto real financial decisions — SIPs, property, gold, business launches. Not predictions. Auspicious action.
+      </p>
+      <div class="hero-actions animate-in delay-3">
+        <button class="btn-primary" onclick="window.location.href='app.html'">Open App →</button>
+        <a href="#features" class="btn-ghost">
+          See Features
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual animate-in delay-4">
+      <div class="yantra-container">
+        <div class="yantra-ring"></div>
+        <div class="yantra-ring"></div>
+        <div class="yantra-ring"></div>
+        <div class="yantra-ring"></div>
+        <svg class="yantra-svg" viewBox="0 0 420 420" fill="none">
+          <polygon points="210,20 390,350 30,350" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <polygon points="210,400 30,70 390,70" stroke="#C9A84C" stroke-width="0.8" fill="none" opacity="0.4"/>
+          <polygon points="210,40 370,340 50,340" stroke="#E8650A" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <polygon points="210,380 50,80 370,80" stroke="#E8650A" stroke-width="0.6" fill="none" opacity="0.3"/>
+          <circle cx="210" cy="210" r="190" stroke="#C9A84C" stroke-width="0.5" stroke-dasharray="4 8" opacity="0.3"/>
+          <circle cx="210" cy="210" r="150" stroke="#C9A84C" stroke-width="0.5" opacity="0.2"/>
+          <circle cx="210" cy="210" r="100" stroke="#E8650A" stroke-width="0.5" opacity="0.2"/>
+          <!-- Planets around ring -->
+          <circle cx="210" cy="20" r="4" fill="#C9A84C" opacity="0.8"/>
+          <circle cx="370" cy="126" r="3" fill="#E8650A" opacity="0.7"/>
+          <circle cx="370" cy="295" r="4" fill="#C9A84C" opacity="0.6"/>
+          <circle cx="210" cy="400" r="3" fill="#E8650A" opacity="0.8"/>
+          <circle cx="50" cy="295" r="4" fill="#C9A84C" opacity="0.7"/>
+          <circle cx="50" cy="126" r="3" fill="#E8650A" opacity="0.6"/>
+          <circle cx="210" cy="60" r="2" fill="white" opacity="0.5"/>
+          <circle cx="340" cy="145" r="2" fill="white" opacity="0.4"/>
+          <circle cx="340" cy="275" r="2" fill="white" opacity="0.5"/>
+          <circle cx="210" cy="360" r="2" fill="white" opacity="0.4"/>
+          <circle cx="80" cy="275" r="2" fill="white" opacity="0.5"/>
+          <circle cx="80" cy="145" r="2" fill="white" opacity="0.4"/>
+        </svg>
+        <!-- Floating pods -->
+        <div class="nakshatra-pod">
+          <div class="pod-label">Today's Nakshatra</div>
+          <div class="pod-value">Rohini ♉</div>
+          <div class="pod-sub">Wealth accumulation ✓</div>
+        </div>
+        <div class="nakshatra-pod">
+          <div class="pod-label">SIP Muhurat</div>
+          <div class="pod-value">11:24 AM</div>
+          <div class="pod-sub">Auspicious window open</div>
+        </div>
+        <div class="nakshatra-pod">
+          <div class="pod-label">Rahu Kaal</div>
+          <div class="pod-value">3:00 – 4:30 PM</div>
+          <div class="pod-sub">Avoid major decisions</div>
+        </div>
+        <div class="nakshatra-pod">
+          <div class="pod-label">Jupiter Transit</div>
+          <div class="pod-value">Taurus ♉</div>
+          <div class="pod-sub">Finance favoured</div>
+        </div>
+        <div class="yantra-center">
+          <div class="center-nakshatra">ॐ</div>
+          <div class="center-label">Dhan Yoga</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item"><span>Muhurat Trading</span><span class="dot">✦</span><span>Akshaya Tritiya</span><span class="dot">✦</span><span>Dhanteras</span><span class="dot">✦</span><span>Diwali Trading</span><span class="dot">✦</span><span>SIP Muhurat</span><span class="dot">✦</span><span>Gold Purchase</span><span class="dot">✦</span><span>Property Registration</span><span class="dot">✦</span><span>Business Launch</span><span class="dot">✦</span><span>Jupiter Transit</span><span class="dot">✦</span><span>Shukra Gochar</span><span class="dot">✦</span></div>
+    <div class="marquee-item"><span>Muhurat Trading</span><span class="dot">✦</span><span>Akshaya Tritiya</span><span class="dot">✦</span><span>Dhanteras</span><span class="dot">✦</span><span>Diwali Trading</span><span class="dot">✦</span><span>SIP Muhurat</span><span class="dot">✦</span><span>Gold Purchase</span><span class="dot">✦</span><span>Property Registration</span><span class="dot">✦</span><span>Business Launch</span><span class="dot">✦</span><span>Jupiter Transit</span><span class="dot">✦</span><span>Shukra Gochar</span><span class="dot">✦</span></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <span class="stat-num">49%</span>
+      <div class="stat-label">Astrology App Market CAGR 2026–30</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-num">56Cr</span>
+      <div class="stat-label">Indians Believe in Vedic Astrology</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-num">₹1200Cr</span>
+      <div class="stat-label">Astrotalk FY25 Revenue</div>
+    </div>
+    <div class="stat-item reveal">
+      <span class="stat-num">0</span>
+      <div class="stat-label">Finance-Focused Astro Apps Exist</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Core Features</span>
+    </div>
+    <h2 class="section-title reveal">Six pillars of <em>astro-finance</em><br>intelligence</h2>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-num">01</div>
+        <div class="feature-icon">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <circle cx="26" cy="26" r="25" stroke="#C9A84C" stroke-width="0.8"/>
+            <polygon points="26,8 42,38 10,38" stroke="#E8650A" stroke-width="1.2" fill="none"/>
+            <polygon points="26,44 10,14 42,14" stroke="#C9A84C" stroke-width="0.8" fill="none"/>
+            <circle cx="26" cy="26" r="4" fill="#C9A84C" opacity="0.6"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Dhan Kundli Profile</h3>
+        <p class="feature-desc">Your birth chart analysed through the lens of wealth — 2nd house (accumulated wealth), 11th house (gains &amp; income), Jupiter and Venus positions mapped to financial personality archetypes.</p>
+        <span class="feature-tag">Vedic Jyotish</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">02</div>
+        <div class="feature-icon">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <rect x="4" y="8" width="44" height="36" rx="2" stroke="#C9A84C" stroke-width="0.8"/>
+            <line x1="4" y1="16" x2="48" y2="16" stroke="#C9A84C" stroke-width="0.5"/>
+            <circle cx="16" cy="28" r="5" stroke="#E8650A" stroke-width="1"/>
+            <circle cx="36" cy="32" r="5" stroke="#C9A84C" stroke-width="1"/>
+            <line x1="16" y1="28" x2="36" y2="32" stroke="#C9A84C" stroke-width="0.5" stroke-dasharray="2 3"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Muhurat Calendar</h3>
+        <p class="feature-desc">A live financial calendar showing auspicious windows for SIPs, property deals, gold purchases, loan signing, business registration — with Rahu Kaal warnings and Abhijit Muhurat slots.</p>
+        <span class="feature-tag">Panchang Engine</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">03</div>
+        <div class="feature-icon">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <path d="M8 40 L20 28 L32 34 L44 12" stroke="#E8650A" stroke-width="1.2" fill="none"/>
+            <circle cx="20" cy="28" r="3" fill="#C9A84C"/>
+            <circle cx="32" cy="34" r="3" fill="#C9A84C"/>
+            <circle cx="44" cy="12" r="3" fill="#E8650A"/>
+            <path d="M8 40 L20 28 L32 34 L44 12" stroke="#E8650A" stroke-width="8" fill="none" opacity="0.05"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">SIP Muhurat Advisor</h3>
+        <p class="feature-desc">Tell us your SIP amount and fund type. We surface the top 3 auspicious start dates for your nakshatra this month — with one-tap links to Zerodha, Groww, or Kuvera.</p>
+        <span class="feature-tag">Fintech Bridge</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">04</div>
+        <div class="feature-icon">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <circle cx="26" cy="26" r="20" stroke="#C9A84C" stroke-width="0.8"/>
+            <path d="M26 10 L26 26 L38 20" stroke="#E8650A" stroke-width="1.2" stroke-linecap="round"/>
+            <circle cx="26" cy="26" r="2" fill="#C9A84C"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Rahu Kaal Alerts</h3>
+        <p class="feature-desc">Daily push notification when Rahu Kaal begins. Stop signing contracts, transferring large sums, or making impulsive trades during the inauspicious window — automatically, every day.</p>
+        <span class="feature-tag">Daily Protection</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">05</div>
+        <div class="feature-icon">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <path d="M10 44 C10 44 14 20 26 20 C38 20 42 44 42 44" stroke="#C9A84C" stroke-width="0.8" fill="none"/>
+            <path d="M10 34 C10 34 14 12 26 12 C38 12 42 34 42 34" stroke="#E8650A" stroke-width="0.6" fill="none" opacity="0.5"/>
+            <circle cx="26" cy="18" r="6" stroke="#C9A84C" stroke-width="1"/>
+            <path d="M23 18 L25 20 L30 15" stroke="#E8650A" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Financial Horoscope</h3>
+        <p class="feature-desc">Weekly and monthly forecast for your Dhan Yoga windows — when to be aggressive with investments, when to conserve, and which life events align with your Mahadasha cycle.</p>
+        <span class="feature-tag">Predictive Layer</span>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-num">06</div>
+        <div class="feature-icon">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <rect x="10" y="12" width="32" height="28" rx="2" stroke="#C9A84C" stroke-width="0.8"/>
+            <rect x="16" y="20" width="8" height="12" fill="rgba(232,101,10,0.3)" stroke="#E8650A" stroke-width="0.8"/>
+            <rect x="28" y="25" width="8" height="7" fill="rgba(201,168,76,0.2)" stroke="#C9A84C" stroke-width="0.8"/>
+            <line x1="10" y1="34" x2="42" y2="34" stroke="#C9A84C" stroke-width="0.5"/>
+          </svg>
+        </div>
+        <h3 class="feature-title">Life Event Timing</h3>
+        <p class="feature-desc">Planning to buy a house, launch a business, or take a loan? Enter the event and your timeframe. We show every auspicious window in the next 3–12 months with strength scores and caveats.</p>
+        <span class="feature-tag">Decision Engine</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP SCREENS -->
+<section class="app-showcase" id="app">
+  <div class="section-inner">
+    <div class="showcase-header">
+      <div class="section-eyebrow reveal" style="justify-content:center">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">The App</span>
+        <div class="eyebrow-line"></div>
+      </div>
+      <h2 class="section-title reveal" style="text-align:center">Beautifully built for<br><em>the Indian investor</em></h2>
+    </div>
+    <div class="phones-container reveal">
+      <!-- Phone 1: Calendar -->
+      <div class="phone-frame left">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="phone-screen screen-calendar">
+          <div class="cal-header">
+            <div>
+              <div class="cal-month">April 2026</div>
+              <div class="cal-title">Muhurat Calendar</div>
+            </div>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="9" stroke="#C9A84C" stroke-width="0.8"/>
+              <path d="M6 10h8M10 6l4 4-4 4" stroke="#C9A84C" stroke-width="1"/>
+            </svg>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day-name">Su</div><div class="cal-day-name">Mo</div><div class="cal-day-name">Tu</div><div class="cal-day-name">We</div><div class="cal-day-name">Th</div><div class="cal-day-name">Fr</div><div class="cal-day-name">Sa</div>
+            <div class="cal-day"></div><div class="cal-day"></div><div class="cal-day">1</div><div class="cal-day shubh muhurat">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div>
+            <div class="cal-day rahu">6</div><div class="cal-day">7</div><div class="cal-day shubh">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day shubh muhurat">11</div><div class="cal-day">12</div>
+            <div class="cal-day">13</div><div class="cal-day">14</div><div class="cal-day shubh muhurat">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div>
+            <div class="cal-day">20</div><div class="cal-day today">21</div><div class="cal-day shubh">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day rahu">25</div><div class="cal-day">26</div>
+          </div>
+          <div class="cal-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Shubh</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#E53E3E"></div>Rahu</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--saffron)"></div>Today</div>
+          </div>
+          <div class="cal-event-item">
+            <div><div class="cal-event-date">22</div><div class="cal-event-month">Apr</div></div>
+            <div><div class="cal-event-name">SIP Start Window</div><div class="cal-event-desc">Rohini Nakshatra · 9:15–11:30 AM</div></div>
+          </div>
+          <div class="cal-event-item">
+            <div><div class="cal-event-date">15</div><div class="cal-event-month">May</div></div>
+            <div><div class="cal-event-name">Gold Purchase Muhurat</div><div class="cal-event-desc">Akshaya Tritiya · All Day</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Phone 2 Center: Dashboard -->
+      <div class="phone-frame center">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="phone-screen screen-dashboard">
+          <div class="dash-header">
+            <div class="dash-greeting">Shubh Prabhat ✦</div>
+            <div class="dash-name">Arjun Sharma</div>
+          </div>
+          <div class="rahu-strip">
+            <div class="rahu-dot"></div>
+            <div class="rahu-text">Rahu Kaal: 3:00 – 4:30 PM · Avoid decisions</div>
+          </div>
+          <div class="dash-today">
+            <div class="dash-today-label">Today's Shubh Muhurat</div>
+            <div class="dash-today-title">✦ 10:48 AM – 12:24 PM</div>
+            <div class="dash-today-time">Rohini Nakshatra · Wealth favoured</div>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-tile">
+              <div class="dash-tile-icon">🌙</div>
+              <div class="dash-tile-label">Nakshatra</div>
+              <div class="dash-tile-val">Rohini</div>
+            </div>
+            <div class="dash-tile">
+              <div class="dash-tile-icon">♃</div>
+              <div class="dash-tile-label">Jupiter</div>
+              <div class="dash-tile-val">Taurus ♉</div>
+            </div>
+            <div class="dash-tile">
+              <div class="dash-tile-icon">📊</div>
+              <div class="dash-tile-label">Dhan Yoga</div>
+              <div class="dash-tile-val">Active ✓</div>
+            </div>
+            <div class="dash-tile">
+              <div class="dash-tile-icon">⏰</div>
+              <div class="dash-tile-label">Next Shubh</div>
+              <div class="dash-tile-val">Apr 22</div>
+            </div>
+          </div>
+          <div class="dash-upcoming">Upcoming Events</div>
+          <div class="dash-event">
+            <div class="dash-event-dot"></div>
+            <div class="dash-event-text">SIP Start · Zerodha</div>
+            <div class="dash-event-time">Apr 22</div>
+          </div>
+          <div class="dash-event">
+            <div class="dash-event-dot" style="background:var(--saffron)"></div>
+            <div class="dash-event-text">Akshaya Tritiya Gold</div>
+            <div class="dash-event-time">May 15</div>
+          </div>
+          <div class="dash-event">
+            <div class="dash-event-dot"></div>
+            <div class="dash-event-text">Property Meeting</div>
+            <div class="dash-event-time">Apr 28</div>
+          </div>
+          <div class="dash-bottom-nav">
+            <div class="dash-nav-icon active"><span>🏠</span><p>Home</p></div>
+            <div class="dash-nav-icon"><span>📅</span><p>Calendar</p></div>
+            <div class="dash-nav-icon"><span>☸️</span><p>Kundli</p></div>
+            <div class="dash-nav-icon"><span>💰</span><p>SIP</p></div>
+            <div class="dash-nav-icon"><span>👤</span><p>Profile</p></div>
+          </div>
+        </div>
+      </div>
+      <!-- Phone 3: Kundli -->
+      <div class="phone-frame right">
+        <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+        <div class="phone-screen screen-kundli">
+          <div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Your Dhan Kundli</div>
+          <div class="kundli-chart">
+            <svg class="kundli-diag" viewBox="0 0 200 200" fill="none">
+              <line x1="0" y1="0" x2="200" y2="200" stroke="#C9A84C" stroke-width="0.5"/>
+              <line x1="200" y1="0" x2="0" y2="200" stroke="#C9A84C" stroke-width="0.5"/>
+              <line x1="100" y1="0" x2="100" y2="200" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>
+              <line x1="0" y1="100" x2="200" y2="100" stroke="#C9A84C" stroke-width="0.5" opacity="0.5"/>
+            </svg>
+            <div class="kundli-inner"></div>
+            <div class="kundli-center"><div class="kundli-center-text">☉ Sun<br>♌ Leo</div></div>
+            <div class="kundli-house h1"><span class="kundli-planet">♃ Ju</span></div>
+            <div class="kundli-house h2"><span class="kundli-planet">♀ Ve</span></div>
+            <div class="kundli-house h3"><span class="kundli-planet">♂ Ma</span></div>
+            <div class="kundli-house h4"><span class="kundli-planet">☽ Mo</span></div>
+            <div class="kundli-house h7"><span class="kundli-planet">♄ Sa</span></div>
+          </div>
+          <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Financial Traits</div>
+          <div class="profile-traits">
+            <div class="trait-row">
+              <div class="trait-label">Patience</div>
+              <div class="trait-bar-bg"><div class="trait-bar" style="width:82%"></div></div>
+              <div class="trait-val">82%</div>
+            </div>
+            <div class="trait-row">
+              <div class="trait-label">Risk</div>
+              <div class="trait-bar-bg"><div class="trait-bar" style="width:45%"></div></div>
+              <div class="trait-val">45%</div>
+            </div>
+            <div class="trait-row">
+              <div class="trait-label">Accumulation</div>
+              <div class="trait-bar-bg"><div class="trait-bar" style="width:91%"></div></div>
+              <div class="trait-val">91%</div>
+            </div>
+            <div class="trait-row">
+              <div class="trait-label">Timing</div>
+              <div class="trait-bar-bg"><div class="trait-bar" style="width:67%"></div></div>
+              <div class="trait-val">67%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MUHURAT TABLE -->
+<section id="muhurat" class="muhurat-section">
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Upcoming Muhurat Windows</span>
+    </div>
+    <h2 class="section-title reveal">The financial calendar<br><em>aligned with the cosmos</em></h2>
+    <div class="table-wrap reveal">
+      <table class="muhurat-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Nakshatra</th>
+            <th>Event Type</th>
+            <th>Window</th>
+            <th>Strength</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="muhurat-date">Apr 22, 2026</div><div style="font-size:0.7rem;color:var(--text-dim)">Tuesday</div></td>
+            <td>Rohini ♉</td>
+            <td><span class="muhurat-badge badge-gold">SIP Start</span></td>
+            <td>9:15 AM – 11:30 AM</td>
+            <td><span class="muhurat-badge badge-saffron">Excellent</span></td>
+            <td><div class="muhurat-actions"><button class="muhurat-action-btn">Set Reminder</button><button class="muhurat-action-btn">Open Groww</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="muhurat-date">May 15, 2026</div><div style="font-size:0.7rem;color:var(--text-dim)">Friday</div></td>
+            <td>Rohini ♉</td>
+            <td><span class="muhurat-badge badge-saffron">Akshaya Tritiya</span></td>
+            <td>All Day</td>
+            <td><span class="muhurat-badge badge-saffron">Sacred</span></td>
+            <td><div class="muhurat-actions"><button class="muhurat-action-btn">Set Reminder</button><button class="muhurat-action-btn">Buy Gold</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="muhurat-date">May 3, 2026</div><div style="font-size:0.7rem;color:var(--text-dim)">Sunday</div></td>
+            <td>Pushya ♋</td>
+            <td><span class="muhurat-badge badge-gold">Gold Purchase</span></td>
+            <td>7:00 AM – 9:30 AM</td>
+            <td><span class="muhurat-badge badge-gold">Good</span></td>
+            <td><div class="muhurat-actions"><button class="muhurat-action-btn">Set Reminder</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="muhurat-date">Jun 12, 2026</div><div style="font-size:0.7rem;color:var(--text-dim)">Friday</div></td>
+            <td>Shravana ♑</td>
+            <td><span class="muhurat-badge badge-gold">Property Deal</span></td>
+            <td>10:00 AM – 1:00 PM</td>
+            <td><span class="muhurat-badge badge-saffron">Excellent</span></td>
+            <td><div class="muhurat-actions"><button class="muhurat-action-btn">Set Reminder</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="muhurat-date">Oct 21, 2026</div><div style="font-size:0.7rem;color:var(--text-dim)">Wednesday</div></td>
+            <td>Swati ♎</td>
+            <td><span class="muhurat-badge badge-saffron">Muhurat Trading</span></td>
+            <td>Diwali Session</td>
+            <td><span class="muhurat-badge badge-saffron">Sacred</span></td>
+            <td><div class="muhurat-actions"><button class="muhurat-action-btn">Set Reminder</button><button class="muhurat-action-btn">Open Zerodha</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section">
+  <div class="section-inner">
+    <div class="section-eyebrow reveal" style="justify-content:center">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">From Our Users</span>
+      <div class="eyebrow-line"></div>
+    </div>
+    <h2 class="section-title reveal" style="text-align:center">What early believers <em>say</em></h2>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"I started my SIP on Rohini Nakshatra as Nakshatrika suggested. It's been performing 18% above benchmark. Coincidence? Maybe. But I'm not stopping."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">R</div>
+          <div><div class="author-name">Rahul Mehta</div><div class="author-meta">Equity Investor · Mumbai</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"My mother consulted a pandit before every financial decision. This app is exactly that — but on my phone, with my birth details, every single day. Revolutionary."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">P</div>
+          <div><div class="author-name">Priya Nair</div><div class="author-meta">Entrepreneur · Bangalore</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"The Rahu Kaal notification alone saved me from signing a bad contract. I checked back later — the counterparty had hidden a clause. Ancient wisdom is real risk management."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">A</div>
+          <div><div class="author-name">Arjun Kapoor</div><div class="author-meta">NRI Investor · Dubai</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">
+      <div class="eyebrow-line"></div>
+      <span class="eyebrow-text">Pricing</span>
+    </div>
+    <h2 class="section-title reveal">Cosmic guidance at<br><em>every level</em></h2>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-label">Naisargika</div>
+        <div class="pricing-name">Free</div>
+        <div class="pricing-amount">
+          <span class="pricing-currency">₹</span><span class="pricing-num">0</span><span class="pricing-period">/ month</span>
+        </div>
+        <ul class="pricing-features">
+          <li class="included">Daily Rahu Kaal alerts</li>
+          <li class="included">Generic Muhurat calendar</li>
+          <li class="included">Sun sign horoscope</li>
+          <li>Personalized Dhan Kundli</li>
+          <li>SIP Muhurat Recommender</li>
+          <li>Life event timing</li>
+        </ul>
+        <button class="pricing-btn" onclick="window.location.href='app.html'">Begin Free</button>
+      </div>
+      <div class="pricing-card featured reveal">
+        <div class="pricing-label">Nakshatrika Pro ✦</div>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-amount">
+          <span class="pricing-currency">₹</span><span class="pricing-num">199</span><span class="pricing-period">/ month</span>
+        </div>
+        <ul class="pricing-features">
+          <li class="included">Everything in Free</li>
+          <li class="included">Personalized Dhan Kundli</li>
+          <li class="included">SIP Muhurat Recommender</li>
+          <li class="included">Life event timing engine</li>
+          <li class="included">Monthly financial arc</li>
+          <li class="included">Priority Muhurat windows</li>
+        </ul>
+        <button class="pricing-btn primary" onclick="window.location.href='app.html'">Start Pro — ₹199/mo</button>
+      </div>
+      <div class="pricing-card reveal">
+        <div class="pricing-label">Brahmastra</div>
+        <div class="pricing-name">Consult</div>
+        <div class="pricing-amount">
+          <span class="pricing-currency">₹</span><span class="pricing-num">499</span><span class="pricing-period">/ session</span>
+        </div>
+        <ul class="pricing-features">
+          <li class="included">Everything in Pro</li>
+          <li class="included">20-min Financial Astrologer call</li>
+          <li class="included">Personalized dasha analysis</li>
+          <li class="included">Investment timing report PDF</li>
+          <li class="included">Priority booking</li>
+          <li class="included">WhatsApp follow-up</li>
+        </ul>
+        <button class="pricing-btn" onclick="window.location.href='app.html'">Book Consult</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <h2 class="cta-title reveal">Your wealth has a<br><em>cosmic timing.</em><br>Find it today.</h2>
+  <p class="cta-sub reveal">Join thousands of Indian investors aligning ancient Vedic wisdom with modern financial decisions.</p>
+  <div class="cta-store-btns reveal">
+    <button class="store-btn" onclick="window.location.href='app.html'">
+      <div class="store-btn-icon">📱</div>
+      <div class="store-btn-text">
+        <div class="store-btn-sub">Open on</div>
+        <div class="store-btn-name">Web App</div>
+      </div>
+    </button>
+    <button class="store-btn">
+      <div class="store-btn-icon">🍎</div>
+      <div class="store-btn-text">
+        <div class="store-btn-sub">Download on</div>
+        <div class="store-btn-name">App Store</div>
+      </div>
+    </button>
+    <button class="store-btn">
+      <div class="store-btn-icon">▶</div>
+      <div class="store-btn-text">
+        <div class="store-btn-sub">Get it on</div>
+        <div class="store-btn-name">Google Play</div>
+      </div>
+    </button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="nav-logo">
+          <div class="nav-logo-icon">
+            <svg viewBox="0 0 36 36" fill="none">
+              <circle cx="18" cy="18" r="17" stroke="#C9A84C" stroke-width="0.8"/>
+              <polygon points="18,4 31,27 5,27" stroke="#E8650A" stroke-width="1" fill="none"/>
+              <polygon points="18,32 5,9 31,9" stroke="#C9A84C" stroke-width="0.8" fill="none"/>
+              <circle cx="18" cy="18" r="3" fill="#C9A84C"/>
+            </svg>
+          </div>
+          <span class="nav-logo-text">Naksha<span>trika</span></span>
+        </div>
+        <p class="footer-brand-text">Ancient Vedic wisdom, applied to modern Indian wealth creation. The first astro-finance platform built for the way Indians actually think about money.</p>
+        <div class="footer-disclaimer">⚠ Disclaimer: Nakshatrika provides astrological timing guidance rooted in Vedic traditions. This is not SEBI-registered financial advice. Consult a qualified financial advisor before making investment decisions.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#muhurat">Muhurat Calendar</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="app.html">Web App</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Connect</div>
+        <ul class="footer-links">
+          <li><a href="#">Instagram</a></li>
+          <li><a href="#">YouTube</a></li>
+          <li><a href="#">WhatsApp</a></li>
+          <li><a href="#">contact@nakshatrika.in</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 Nakshatrika. All rights reserved.</div>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 4 + 'px';
+  cursor.style.top = my - 4 + 'px';
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx - 16 + 'px';
+  ring.style.top = ry - 16 + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('button, a, .feature-card, .pricing-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'scale(3)';
+    ring.style.transform = 'scale(1.5)';
+    ring.style.borderColor = 'rgba(232,101,10,0.6)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'scale(1)';
+    ring.style.transform = 'scale(1)';
+    ring.style.borderColor = 'rgba(201,168,76,0.5)';
+  });
+});
+
+// Star field
+const starfield = document.getElementById('starfield');
+for (let i = 0; i < 200; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const size = Math.random() * 2 + 0.5;
+  s.style.cssText = `
+    width:${size}px;height:${size}px;
+    left:${Math.random()*100}%;top:${Math.random()*100}%;
+    --dur:${2+Math.random()*4}s;
+    --delay:${Math.random()*4}s;
+    --min-op:${0.05+Math.random()*0.1};
+    --max-op:${0.4+Math.random()*0.5};
+  `;
+  starfield.appendChild(s);
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Counter animation
+function animateCounter(el, target, suffix='') {
+  let current = 0;
+  const step = target / 60;
+  const timer = setInterval(() => {
+    current += step;
+    if (current >= target) { current = target; clearInterval(timer); }
+    el.textContent = Math.floor(current) + suffix;
+  }, 16);
+}
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const nums = e.target.querySelectorAll('.stat-num');
+      // Simple fade in for stats
+      e.target.style.opacity = '1';
+      statsObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stats-bar').forEach(el => statsObserver.observe(el));
+
+// Nav scroll effect
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.background = window.scrollY > 50
+    ? 'rgba(10,22,40,0.98)'
+    : 'linear-gradient(180deg, rgba(10,22,40,0.95) 0%, transparent 100%)';
+});
+</script>
+</body>
+</html>

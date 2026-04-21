@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nakshatrika App — Astro Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --saffron: #E8650A;
+  --saffron-light: #F5831F;
+  --saffron-glow: rgba(232,101,10,0.15);
+  --navy: #060E1A;
+  --navy-mid: #0A1628;
+  --navy-light: #0F1E35;
+  --navy-card: #111F35;
+  --gold: #C9A84C;
+  --gold-light: #E2C06A;
+  --gold-dim: rgba(201,168,76,0.15);
+  --cream: #F0E6CC;
+  --text-primary: #EDE0C4;
+  --text-muted: rgba(237,224,196,0.55);
+  --text-dim: rgba(237,224,196,0.22);
+  --border: rgba(201,168,76,0.12);
+  --border-mid: rgba(201,168,76,0.22);
+  --border-bright: rgba(201,168,76,0.38);
+  --red: #E53E3E;
+  --green: #48BB78;
+  --sidebar-w: 260px;
+}
+* { margin:0;padding:0;box-sizing:border-box; }
+html,body { height:100%;overflow:hidden; }
+body {
+  background: var(--navy);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  cursor: none;
+}
+.cursor { width:7px;height:7px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform 0.1s;mix-blend-mode:screen; }
+.cursor-ring { width:28px;height:28px;border:1px solid rgba(201,168,76,0.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transition:all 0.15s ease; }
+
+/* LAYOUT */
+.app-layout { display:flex;height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy-mid);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-icon { width:32px;height:32px;flex-shrink:0; }
+.logo-icon svg { width:100%;height:100%; }
+.logo-text { font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:500;color:var(--cream);letter-spacing:0.04em; }
+.logo-text span { color:var(--gold); }
+
+.nav-section { padding: 20px 12px 8px; }
+.nav-section-label { font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--text-dim);padding:0 12px;margin-bottom:6px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: none;
+  transition: all 0.2s;
+  margin-bottom: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.nav-item:hover { background: var(--navy-light); }
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(232,101,10,0.12), rgba(201,168,76,0.06));
+  border: 1px solid rgba(232,101,10,0.2);
+}
+.nav-item.active::before {
+  content:'';position:absolute;left:0;top:15%;bottom:15%;width:2px;background:var(--saffron);border-radius:2px;
+}
+.nav-icon { width:18px;height:18px;flex-shrink:0;opacity:0.5;transition:opacity 0.2s; }
+.nav-item.active .nav-icon,.nav-item:hover .nav-icon { opacity:1; }
+.nav-label { font-size:0.85rem;color:var(--text-muted);transition:color 0.2s; }
+.nav-item.active .nav-label,.nav-item:hover .nav-label { color:var(--cream); }
+.nav-badge { margin-left:auto;background:var(--saffron);color:white;font-size:0.6rem;padding:1px 6px;border-radius:10px;font-weight:500; }
+
+.sidebar-bottom {
+  margin-top: auto;
+  border-top: 1px solid var(--border);
+  padding: 16px 12px;
+}
+.user-card {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: none;
+}
+.user-avatar {
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:1rem;color:white;flex-shrink:0;
+}
+.user-name { font-size:0.85rem;color:var(--cream); }
+.user-meta { font-size:0.7rem;color:var(--text-muted); }
+.pro-badge { margin-left:auto;border:1px solid var(--gold);color:var(--gold);font-size:0.6rem;padding:2px 7px;letter-spacing:0.08em;text-transform:uppercase; }
+
+/* MAIN CONTENT */
+.main-content { flex:1;overflow-y:auto;overflow-x:hidden; }
+.main-content::-webkit-scrollbar { width:4px; }
+.main-content::-webkit-scrollbar-thumb { background:var(--border-mid);border-radius:2px; }
+
+/* SCREEN */
+.screen { display:none;min-height:100%; }
+.screen.active { display:block; }
+
+/* TOP BAR */
+.topbar {
+  position: sticky;top:0;z-index:50;
+  padding: 18px 36px;
+  background: rgba(6,14,26,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-title { font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;color:var(--cream); }
+.topbar-right { display:flex;align-items:center;gap:12px; }
+.topbar-btn {
+  padding:8px 18px;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;
+  border:1px solid var(--border-mid);background:transparent;color:var(--text-muted);cursor:none;transition:all 0.25s;
+}
+.topbar-btn.primary { background:var(--saffron);border-color:var(--saffron);color:white; }
+.topbar-btn:hover:not(.primary) { border-color:var(--gold);color:var(--gold); }
+.topbar-btn.primary:hover { background:var(--saffron-light); }
+
+/* PAGE PADDING */
+.page { padding:32px 36px; }
+
+/* Eyebrow */
+.eyebrow { font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px; }
+
+/* CARDS */
+.card {
+  background:var(--navy-card);
+  border:1px solid var(--border);
+  padding:24px;
+}
+.card-sm { padding:16px 20px; }
+.card-title { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--cream);margin-bottom:4px; }
+.card-sub { font-size:0.78rem;color:var(--text-muted); }
+
+/* GRID HELPERS */
+.grid-2 { display:grid;grid-template-columns:repeat(2,1fr);gap:16px; }
+.grid-3 { display:grid;grid-template-columns:repeat(3,1fr);gap:16px; }
+.grid-4 { display:grid;grid-template-columns:repeat(4,1fr);gap:16px; }
+.grid-auto { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px; }
+
+/* ===== DASHBOARD ===== */
+.dash-hero {
+  padding: 32px 36px 28px;
+  background: linear-gradient(135deg, rgba(232,101,10,0.06) 0%, transparent 60%);
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: start;
+}
+.dash-greeting-small { font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:6px; }
+.dash-heading { font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--cream);margin-bottom:8px; }
+.dash-subtext { font-size:0.85rem;color:var(--text-muted);line-height:1.6; }
+
+.rahu-alert {
+  background:rgba(229,62,62,0.07);
+  border:1px solid rgba(229,62,62,0.22);
+  padding:10px 16px;
+  display:flex;align-items:center;gap:10px;
+  margin-top:16px;
+}
+.rahu-dot { width:7px;height:7px;border-radius:50%;background:var(--red);animation:blink 1.5s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+.rahu-text { font-size:0.78rem;color:rgba(240,160,160,0.75); }
+
+.muhurat-hero-card {
+  background: linear-gradient(135deg, rgba(201,168,76,0.1), rgba(232,101,10,0.08));
+  border: 1px solid var(--border-bright);
+  padding: 20px 24px;
+  min-width: 280px;
+}
+.mhc-label { font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px; }
+.mhc-time { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--cream);margin-bottom:4px; }
+.mhc-nakshatra { font-size:0.78rem;color:var(--text-muted); }
+.mhc-indicator { display:flex;align-items:center;gap:6px;margin-top:10px; }
+.mhc-dot { width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s ease infinite; }
+.mhc-status { font-size:0.72rem;color:var(--green); }
+
+/* KPI tiles */
+.kpi-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);margin:28px 36px; }
+.kpi-tile {
+  padding:20px 24px;
+  border-right:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.kpi-tile:last-child { border-right:none; }
+.kpi-tile::before {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--border-mid),transparent);
+}
+.kpi-label { font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px; }
+.kpi-value { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--cream);margin-bottom:4px; }
+.kpi-change { font-size:0.72rem; }
+.positive { color:var(--green); }
+.negative { color:var(--red); }
+.neutral { color:var(--text-muted); }
+
+/* Section heading */
+.section-head {
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.section-head-title { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--cream); }
+.section-head-link { font-size:0.75rem;color:var(--gold);cursor:none;letter-spacing:0.06em; }
+
+/* Upcoming events list */
+.event-list { display:flex;flex-direction:column;gap:0; }
+.event-row {
+  display:flex;align-items:center;gap:16px;
+  padding:14px 0;
+  border-bottom:1px solid rgba(201,168,76,0.07);
+  cursor:none;
+  transition:background 0.2s;
+}
+.event-row:last-child { border-bottom:none; }
+.event-date-block { text-align:center;min-width:44px; }
+.event-date-num { font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);line-height:1; }
+.event-date-mon { font-size:0.58rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em; }
+.event-divider { width:1px;height:32px;background:var(--border); }
+.event-info { flex:1; }
+.event-name { font-size:0.88rem;color:var(--cream);margin-bottom:3px; }
+.event-meta { font-size:0.72rem;color:var(--text-muted); }
+.event-badge {
+  padding:3px 10px;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;
+  border:1px solid;
+}
+.badge-auspicious { border-color:var(--gold);color:var(--gold); }
+.badge-sacred { border-color:var(--saffron);color:var(--saffron); }
+.badge-caution { border-color:rgba(229,62,62,0.5);color:rgba(240,100,100,0.7); }
+
+/* Planet strip */
+.planet-strip {
+  display:flex;gap:0;border:1px solid var(--border);
+  margin:0 36px 28px;overflow-x:auto;
+}
+.planet-strip::-webkit-scrollbar { height:2px; }
+.planet-tile {
+  flex:1;min-width:110px;padding:14px 16px;
+  border-right:1px solid var(--border);
+  text-align:center;
+}
+.planet-tile:last-child { border-right:none; }
+.planet-symbol { font-size:1.4rem;margin-bottom:6px;display:block; }
+.planet-name { font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px; }
+.planet-sign { font-family:'Cormorant Garamond',serif;font-size:0.9rem;color:var(--cream); }
+.planet-status { font-size:0.65rem;color:var(--text-muted);margin-top:3px; }
+.planet-status.good { color:var(--green); }
+.planet-status.alert { color:rgba(240,180,50,0.8); }
+
+/* ===== MUHURAT CALENDAR ===== */
+.calendar-layout { display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 61px); }
+.calendar-main { border-right:1px solid var(--border);padding:28px 32px; }
+.calendar-sidebar { padding:24px; }
+
+.cal-nav { display:flex;align-items:center;gap:16px;margin-bottom:24px; }
+.cal-month-title { font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--cream);flex:1; }
+.cal-nav-btn {
+  width:32px;height:32px;border:1px solid var(--border);background:transparent;
+  display:flex;align-items:center;justify-content:center;cursor:none;
+  color:var(--text-muted);transition:all 0.2s;
+}
+.cal-nav-btn:hover { border-color:var(--gold);color:var(--gold); }
+
+.cal-weekdays { display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px; }
+.cal-wd { text-align:center;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);padding:8px 0; }
+.cal-days { display:grid;grid-template-columns:repeat(7,1fr);gap:4px; }
+.cal-cell {
+  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:0.82rem;color:var(--text-muted);border-radius:4px;
+  cursor:none;transition:all 0.2s;position:relative;
+}
+.cal-cell:hover { background:rgba(201,168,76,0.06); }
+.cal-cell.empty { cursor:default; }
+.cal-cell.today { background:var(--saffron);color:white !important;border-radius:50%; }
+.cal-cell.shubh { color:var(--gold-light); }
+.cal-cell.shubh::after {
+  content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--gold);
+}
+.cal-cell.rahu-day { color:rgba(240,100,100,0.5); }
+.cal-cell.rahu-day::after {
+  content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--red);opacity:0.6;
+}
+.cal-cell.selected { border:1px solid var(--gold); }
+.cal-cell.has-event { font-weight:500; }
+
+.cal-legend { display:flex;flex-wrap:wrap;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border); }
+.legend-item { display:flex;align-items:center;gap:7px;font-size:0.72rem;color:var(--text-muted); }
+.legend-dot { width:8px;height:8px;border-radius:50%; }
+
+/* Day detail sidebar */
+.day-detail {}
+.day-detail-header { margin-bottom:20px; }
+.day-detail-date { font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--cream); }
+.day-detail-nakshatra { font-size:0.78rem;color:var(--gold);margin-top:4px; }
+.day-detail-tithi { font-size:0.72rem;color:var(--text-muted); }
+
+.timing-block { margin-bottom:16px; }
+.timing-label { font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px; }
+.timing-slot {
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;
+  background:rgba(201,168,76,0.04);
+  border:1px solid var(--border);
+  margin-bottom:6px;
+}
+.timing-dot { width:7px;height:7px;border-radius:50%;flex-shrink:0; }
+.timing-time { font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:var(--cream);flex:1; }
+.timing-quality { font-size:0.65rem;color:var(--text-muted); }
+
+.rahu-block {
+  background:rgba(229,62,62,0.05);
+  border:1px solid rgba(229,62,62,0.18);
+  padding:12px 16px;
+  margin-bottom:16px;
+}
+.rahu-label { font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(229,62,62,0.6);margin-bottom:6px; }
+.rahu-time { font-family:'Cormorant Garamond',serif;font-size:1rem;color:rgba(240,160,160,0.8); }
+
+.day-actions { display:flex;flex-direction:column;gap:8px;margin-top:16px; }
+.day-action-btn {
+  padding:10px 16px;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;
+  border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:none;
+  transition:all 0.25s;text-align:left;width:100%;
+}
+.day-action-btn.primary { background:var(--saffron);border-color:var(--saffron);color:white; }
+.day-action-btn:hover:not(.primary) { border-color:var(--gold);color:var(--gold); }
+
+/* ===== KUNDLI SCREEN ===== */
+.kundli-layout { display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 61px); }
+.kundli-chart-pane { border-right:1px solid var(--border);padding:32px;display:flex;flex-direction:column;align-items:center;justify-content:center; }
+.kundli-info-pane { padding:32px;overflow-y:auto; }
+
+.kundli-chart-svg {
+  width: 320px; height: 320px;
+  border: 1px solid var(--border-mid);
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.kundli-svg { width:100%;height:100%; }
+
+.planet-info-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px; }
+.planet-info-card {
+  background:var(--navy-card);border:1px solid var(--border);
+  padding:12px 14px;
+}
+.pic-symbol { font-size:1.1rem;margin-bottom:4px; }
+.pic-name { font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim); }
+.pic-sign { font-family:'Cormorant Garamond',serif;font-size:0.95rem;color:var(--cream); }
+.pic-house { font-size:0.68rem;color:var(--text-muted); }
+.pic-quality { font-size:0.65rem;margin-top:4px; }
+.quality-good { color:var(--green); }
+.quality-neutral { color:var(--text-muted); }
+.quality-alert { color:rgba(240,200,50,0.8); }
+
+/* Financial personality */
+.fp-title { font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--cream);margin-bottom:4px; }
+.fp-sub { font-size:0.8rem;color:var(--text-muted);margin-bottom:20px;line-height:1.6; }
+.trait-item { margin-bottom:14px; }
+.trait-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:6px; }
+.trait-name { font-size:0.78rem;color:var(--cream); }
+.trait-pct { font-size:0.72rem;color:var(--gold); }
+.trait-track { height:3px;background:rgba(255,255,255,0.05);border-radius:2px; }
+.trait-fill { height:100%;border-radius:2px;background:linear-gradient(90deg,var(--saffron),var(--gold)); }
+.trait-desc { font-size:0.7rem;color:var(--text-muted);margin-top:4px; }
+
+.archetype-card {
+  background:linear-gradient(135deg,rgba(232,101,10,0.08),rgba(201,168,76,0.06));
+  border:1px solid rgba(232,101,10,0.2);
+  padding:20px;
+  margin-bottom:20px;
+}
+.arch-label { font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--saffron);margin-bottom:6px; }
+.arch-name { font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--cream);margin-bottom:8px; }
+.arch-desc { font-size:0.82rem;color:var(--text-muted);line-height:1.7; }
+
+/* ===== SIP MUHURAT ===== */
+.sip-layout { padding:32px 36px; }
+.sip-form-card { max-width:640px;margin-bottom:28px; }
+.form-row { margin-bottom:18px; }
+.form-label { font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;display:block; }
+.form-input {
+  width:100%;padding:12px 16px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border-mid);
+  color:var(--text-primary);
+  font-family:'DM Sans',sans-serif;font-size:0.9rem;
+  cursor:none;outline:none;
+  transition:border-color 0.25s;
+  -webkit-appearance:none;
+}
+.form-input:focus { border-color:var(--gold); }
+.form-input option { background:var(--navy-mid); }
+.form-row-2 { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+
+.sip-results { margin-top:8px; }
+.sip-result-label { font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--cream);margin-bottom:16px; }
+.sip-date-card {
+  background:var(--navy-card);border:1px solid var(--border);
+  padding:20px;margin-bottom:10px;
+  display:flex;align-items:center;gap:20px;
+  cursor:none;transition:all 0.25s;
+}
+.sip-date-card:hover { border-color:var(--gold);background:rgba(201,168,76,0.04); }
+.sip-date-card.best { border-color:var(--gold);background:linear-gradient(135deg,rgba(201,168,76,0.07),transparent); }
+.sdc-rank { font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--text-dim);min-width:40px; }
+.sip-date-card.best .sdc-rank { color:var(--gold); }
+.sdc-date { flex:1; }
+.sdc-day { font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--cream); }
+.sdc-nak { font-size:0.75rem;color:var(--text-muted); }
+.sdc-window { font-size:0.72rem;color:var(--gold);margin-top:4px; }
+.sdc-score { text-align:right; }
+.score-num { font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--cream); }
+.score-label { font-size:0.62rem;color:var(--text-muted); }
+.sdc-actions { display:flex;flex-direction:column;gap:6px; }
+.sdc-btn {
+  padding:6px 14px;font-size:0.68rem;letter-spacing:0.08em;text-transform:uppercase;
+  border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:none;
+  transition:all 0.25s;white-space:nowrap;
+}
+.sdc-btn.primary { background:var(--saffron);border-color:var(--saffron);color:white; }
+.sdc-btn:hover:not(.primary) { border-color:var(--gold);color:var(--gold); }
+
+/* ===== HOROSCOPE ===== */
+.horoscope-layout { padding:32px 36px; }
+.period-tabs { display:flex;gap:0;border:1px solid var(--border);width:fit-content;margin-bottom:28px; }
+.period-tab {
+  padding:10px 24px;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;
+  cursor:none;transition:all 0.2s;color:var(--text-muted);border-right:1px solid var(--border);
+}
+.period-tab:last-child { border-right:none; }
+.period-tab.active { background:rgba(232,101,10,0.12);color:var(--saffron); }
+
+.horoscope-grid { display:grid;grid-template-columns:1fr 320px;gap:20px; }
+.horoscope-main {}
+.horoscope-aside {}
+
+.dasha-card {
+  background:var(--navy-card);border:1px solid var(--border);
+  padding:20px;margin-bottom:12px;
+}
+.dc-period { font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px; }
+.dc-title { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--cream);margin-bottom:8px; }
+.dc-text { font-size:0.82rem;color:var(--text-muted);line-height:1.7; }
+.dc-tags { display:flex;flex-wrap:wrap;gap:6px;margin-top:12px; }
+.dc-tag {
+  padding:3px 10px;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;
+  border:1px solid var(--border);color:var(--text-dim);
+}
+.dc-tag.good { border-color:rgba(72,187,120,0.3);color:var(--green); }
+.dc-tag.alert { border-color:rgba(240,180,50,0.3);color:rgba(240,200,80,0.8); }
+.dc-tag.caution { border-color:rgba(229,62,62,0.3);color:rgba(240,120,120,0.7); }
+
+.forecast-ring { margin-bottom:16px; }
+.ring-label { font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px; }
+.ring-chart {
+  width:100%;height:8px;background:rgba(255,255,255,0.04);
+  border-radius:4px;overflow:hidden;margin-bottom:4px;
+}
+.ring-fill { height:100%;border-radius:4px; }
+.ring-meta { display:flex;justify-content:space-between;font-size:0.68rem;color:var(--text-dim); }
+
+/* ===== ALERTS ===== */
+.alerts-layout { padding:32px 36px; }
+.alert-card {
+  background:var(--navy-card);border:1px solid var(--border);
+  padding:18px 20px;margin-bottom:8px;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.alert-dot-wrap { padding-top:4px; }
+.alert-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+.alert-title { font-size:0.88rem;color:var(--cream);margin-bottom:4px; }
+.alert-body { font-size:0.78rem;color:var(--text-muted);line-height:1.6; }
+.alert-meta { font-size:0.65rem;color:var(--text-dim);margin-top:6px; }
+.alert-actions { margin-left:auto;display:flex;gap:8px;flex-shrink:0; }
+.alert-btn {
+  padding:5px 12px;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;
+  border:1px solid var(--border);background:transparent;color:var(--text-muted);cursor:none;
+  transition:all 0.2s;
+}
+.alert-btn:hover { border-color:var(--gold);color:var(--gold); }
+
+/* ===== PROFILE ===== */
+.profile-layout { display:grid;grid-template-columns:320px 1fr;gap:0;min-height:calc(100vh - 61px); }
+.profile-left { border-right:1px solid var(--border);padding:32px; }
+.profile-right { padding:32px; }
+.profile-avatar-large {
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;font-size:2rem;color:white;
+  margin:0 auto 20px;
+}
+.profile-name-large { font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--cream);text-align:center; }
+.profile-meta-large { font-size:0.78rem;color:var(--text-muted);text-align:center;margin-bottom:20px; }
+.birth-detail-grid { display:flex;flex-direction:column;gap:8px;margin-bottom:20px; }
+.bd-row {
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:rgba(255,255,255,0.02);border:1px solid var(--border);
+}
+.bd-key { font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim); }
+.bd-val { font-size:0.85rem;color:var(--cream); }
+
+.subscription-card {
+  background:linear-gradient(135deg,rgba(232,101,10,0.1),rgba(201,168,76,0.06));
+  border:1px solid rgba(232,101,10,0.25);
+  padding:16px;
+  margin-bottom:16px;
+}
+.sub-label { font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--saffron);margin-bottom:6px; }
+.sub-name { font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--cream); }
+.sub-renew { font-size:0.7rem;color:var(--text-muted);margin-top:4px; }
+
+.settings-group { margin-bottom:24px; }
+.settings-label { font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px; }
+.settings-row {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid rgba(201,168,76,0.07);
+}
+.settings-row:last-child { border-bottom:none; }
+.settings-key { font-size:0.85rem;color:var(--cream); }
+.settings-val { font-size:0.8rem;color:var(--text-muted); }
+.toggle {
+  width:38px;height:20px;border-radius:10px;background:rgba(255,255,255,0.08);
+  position:relative;cursor:none;transition:background 0.25s;
+  border:1px solid var(--border);
+}
+.toggle.on { background:var(--saffron);border-color:var(--saffron); }
+.toggle::after {
+  content:'';position:absolute;top:2px;left:2px;
+  width:14px;height:14px;border-radius:50%;background:white;
+  transition:transform 0.25s;
+}
+.toggle.on::after { transform:translateX(18px); }
+
+/* ===== STARS BG ===== */
+.app-bg-stars {
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.bg-star { position:absolute;background:white;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite; animation-delay:var(--del,0s); }
+@keyframes tw { 0%,100%{opacity:var(--lo,.05)}50%{opacity:var(--hi,.3)} }
+
+/* Scrollbar for main */
+.main-content { scrollbar-width:thin;scrollbar-color:rgba(201,168,76,0.2) transparent; }
+
+/* Animate in */
+@keyframes slideIn { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+.screen.active { animation:slideIn 0.3s ease; }
+
+/* ===== MOBILE ===== */
+.mobile-nav {
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--navy-mid);
+  border-top:1px solid var(--border);
+  padding:8px 0 12px;
+  z-index:100;
+}
+.mob-nav-items { display:flex;justify-content:space-around; }
+.mob-nav-item { display:flex;flex-direction:column;align-items:center;gap:4px;cursor:none;padding:6px 12px; }
+.mob-nav-label { font-size:0.6rem;letter-spacing:0.06em;color:var(--text-dim); }
+.mob-nav-item.active .mob-nav-label { color:var(--gold); }
+.mob-nav-icon { font-size:1.1rem; }
+
+@media(max-width:768px) {
+  .sidebar { display:none; }
+  .mobile-nav { display:block; }
+  .main-content { height:calc(100vh - 52px);overflow-y:auto; }
+  .app-layout { flex-direction:column; }
+  .kpi-grid { grid-template-columns:repeat(2,1fr); }
+  .calendar-layout { grid-template-columns:1fr; }
+  .kundli-layout { grid-template-columns:1fr; }
+  .horoscope-grid { grid-template-columns:1fr; }
+  .profile-layout { grid-template-columns:1fr; }
+  .sip-layout { padding:20px 16px; }
+  .page { padding:20px 16px; }
+  .topbar { padding:14px 16px; }
+  .dash-hero { padding:20px 16px;grid-template-columns:1fr; }
+  .kpi-grid { margin:16px; }
+  .planet-strip { margin:0 16px 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Background stars -->
+<div class="app-bg-stars" id="bgStars"></div>
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="15" stroke="#C9A84C" stroke-width="0.8"/>
+          <polygon points="16,3 28,25 4,25" stroke="#E8650A" stroke-width="1" fill="none"/>
+          <polygon points="16,29 4,7 28,7" stroke="#C9A84C" stroke-width="0.7" fill="none"/>
+          <circle cx="16" cy="16" r="3" fill="#C9A84C"/>
+        </svg>
+      </div>
+      <span class="logo-text">Naksha<span>trika</span></span>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Main</div>
+      <div class="nav-item active" onclick="showScreen('dashboard',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><rect x="1" y="1" width="7" height="7" stroke="currentColor" stroke-width="1.2"/><rect x="10" y="1" width="7" height="7" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="10" width="7" height="7" stroke="currentColor" stroke-width="1.2"/><rect x="10" y="10" width="7" height="7" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="showScreen('calendar',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><rect x="1" y="3" width="16" height="14" rx="1" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1"/><line x1="5" y1="1" x2="5" y2="5" stroke="currentColor" stroke-width="1.2"/><line x1="13" y1="1" x2="13" y2="5" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="nav-label">Muhurat Calendar</span>
+      </div>
+      <div class="nav-item" onclick="showScreen('sip',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><path d="M2 14 L6 10 L10 12 L16 4" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="10" r="2" stroke="currentColor" stroke-width="1"/><circle cx="16" cy="4" r="2" stroke="currentColor" stroke-width="1"/></svg>
+        <span class="nav-label">SIP Muhurat</span>
+        <span class="nav-badge">3</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Insights</div>
+      <div class="nav-item" onclick="showScreen('kundli',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1"/><polygon points="9,2 16,14 2,14" stroke="currentColor" stroke-width="1" fill="none"/><polygon points="9,16 2,4 16,4" stroke="currentColor" stroke-width="0.8" fill="none"/></svg>
+        <span class="nav-label">Dhan Kundli</span>
+      </div>
+      <div class="nav-item" onclick="showScreen('horoscope',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="1"/><line x1="1" y1="9" x2="17" y2="9" stroke="currentColor" stroke-width="0.8"/><line x1="9" y1="1" x2="9" y2="17" stroke="currentColor" stroke-width="0.8"/><path d="M4 5 Q9 2 14 5" stroke="currentColor" stroke-width="0.8" fill="none"/><path d="M4 13 Q9 16 14 13" stroke="currentColor" stroke-width="0.8" fill="none"/></svg>
+        <span class="nav-label">Horoscope</span>
+      </div>
+      <div class="nav-item" onclick="showScreen('alerts',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><path d="M9 2 L9 4" stroke="currentColor" stroke-width="1.2"/><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.2"/><line x1="9" y1="9" x2="9" y2="12" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="7" r="0.7" fill="currentColor"/></svg>
+        <span class="nav-label">Alerts</span>
+        <span class="nav-badge">2</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" onclick="showScreen('profile',this)">
+        <svg class="nav-icon" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M1 17 C1 12 5 10 9 10 C13 10 17 12 17 17" stroke="currentColor" stroke-width="1.2"/></svg>
+        <span class="nav-label">My Profile</span>
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="user-avatar">A</div>
+        <div>
+          <div class="user-name">Arjun Sharma</div>
+          <div class="user-meta">Vrishabha Lagna</div>
+        </div>
+        <span class="pro-badge">Pro</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content" id="mainContent">
+
+    <!-- DASHBOARD -->
+    <div class="screen active" id="screen-dashboard">
+      <div class="topbar">
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-right">
+          <div style="font-size:0.78rem;color:var(--text-muted)">Tuesday, 21 April 2026</div>
+          <button class="topbar-btn primary" onclick="showScreen('sip',document.querySelector('[onclick*=sip]'))">Get SIP Muhurat</button>
+        </div>
+      </div>
+
+      <!-- Hero strip -->
+      <div class="dash-hero">
+        <div>
+          <div class="dash-greeting-small">✦ Shubh Prabhat, Arjun</div>
+          <h1 class="dash-heading">Today is <em style="font-style:italic;color:var(--gold-light)">Rohini Nakshatra</em></h1>
+          <p class="dash-subtext">The Moon transits Rohini today — ruled by Brahma, the creator. Excellent for wealth accumulation, new financial beginnings, and long-term investments.</p>
+          <div class="rahu-alert">
+            <div class="rahu-dot"></div>
+            <div class="rahu-text">⚠ Rahu Kaal today: 3:00 PM – 4:30 PM · Avoid signing contracts, large transfers or new investments during this window</div>
+          </div>
+        </div>
+        <div class="muhurat-hero-card">
+          <div class="mhc-label">Today's Shubh Muhurat</div>
+          <div class="mhc-time" id="muhuratTime">10:48 AM – 12:24 PM</div>
+          <div class="mhc-nakshatra">Rohini ♉ · Wealth window open</div>
+          <div class="mhc-indicator">
+            <div class="mhc-dot"></div>
+            <div class="mhc-status" id="windowStatus">Window active</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi-tile">
+          <div class="kpi-label">Current Nakshatra</div>
+          <div class="kpi-value">Rohini</div>
+          <div class="kpi-change neutral">♉ Taurus · Moon 34°</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Dhan Yoga</div>
+          <div class="kpi-value">Active</div>
+          <div class="kpi-change positive">✓ Jupiter–Venus trine</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Mercury Status</div>
+          <div class="kpi-value">Direct</div>
+          <div class="kpi-change positive">✓ Exalted in Virgo</div>
+        </div>
+        <div class="kpi-tile">
+          <div class="kpi-label">Next Shubh Date</div>
+          <div class="kpi-value">Apr 22</div>
+          <div class="kpi-change neutral">SIP Window · 9:15 AM</div>
+        </div>
+      </div>
+
+      <!-- Planet strip -->
+      <div class="planet-strip">
+        <div class="planet-tile">
+          <span class="planet-symbol">☉</span>
+          <div class="planet-name">Sun</div>
+          <div class="planet-sign">Aries ♈</div>
+          <div class="planet-status good">Exalted</div>
+        </div>
+        <div class="planet-tile">
+          <span class="planet-symbol">☽</span>
+          <div class="planet-name">Moon</div>
+          <div class="planet-sign">Taurus ♉</div>
+          <div class="planet-status good">Exalted</div>
+        </div>
+        <div class="planet-tile">
+          <span class="planet-symbol">♂</span>
+          <div class="planet-name">Mars</div>
+          <div class="planet-sign">Cancer ♋</div>
+          <div class="planet-status alert">Debilitated</div>
+        </div>
+        <div class="planet-tile">
+          <span class="planet-symbol">☿</span>
+          <div class="planet-name">Mercury</div>
+          <div class="planet-sign">Aries ♈</div>
+          <div class="planet-status neutral">Combust</div>
+        </div>
+        <div class="planet-tile">
+          <span class="planet-symbol">♃</span>
+          <div class="planet-name">Jupiter</div>
+          <div class="planet-sign">Taurus ♉</div>
+          <div class="planet-status good">Friendly</div>
+        </div>
+        <div class="planet-tile">
+          <span class="planet-symbol">♀</span>
+          <div class="planet-name">Venus</div>
+          <div class="planet-sign">Pisces ♓</div>
+          <div class="planet-status good">Exalted</div>
+        </div>
+        <div class="planet-tile">
+          <span class="planet-symbol">♄</span>
+          <div class="planet-name">Saturn</div>
+          <div class="planet-sign">Aquarius ♒</div>
+          <div class="planet-status neutral">Own Sign</div>
+        </div>
+      </div>
+
+      <!-- Upcoming events + Finance forecast -->
+      <div class="page" style="padding-top:0">
+        <div class="grid-2" style="gap:24px">
+          <div>
+            <div class="section-head">
+              <div class="section-head-title">Upcoming Muhurat Events</div>
+              <div class="section-head-link" onclick="showScreen('calendar',document.querySelector('[onclick*=calendar]'))">View Calendar →</div>
+            </div>
+            <div class="card">
+              <div class="event-list">
+                <div class="event-row">
+                  <div class="event-date-block"><div class="event-date-num">22</div><div class="event-date-mon">Apr</div></div>
+                  <div class="event-divider"></div>
+                  <div class="event-info"><div class="event-name">SIP Start Window</div><div class="event-meta">Rohini Nakshatra · 9:15 AM – 11:30 AM</div></div>
+                  <span class="event-badge badge-auspicious">Excellent</span>
+                </div>
+                <div class="event-row">
+                  <div class="event-date-block"><div class="event-date-num">3</div><div class="event-date-mon">May</div></div>
+                  <div class="event-divider"></div>
+                  <div class="event-info"><div class="event-name">Gold Purchase Muhurat</div><div class="event-meta">Pushya Nakshatra · 7:00 AM – 9:30 AM</div></div>
+                  <span class="event-badge badge-auspicious">Good</span>
+                </div>
+                <div class="event-row">
+                  <div class="event-date-block"><div class="event-date-num">15</div><div class="event-date-mon">May</div></div>
+                  <div class="event-divider"></div>
+                  <div class="event-info"><div class="event-name">Akshaya Tritiya</div><div class="event-meta">Gold, Property, New Ventures · All Day</div></div>
+                  <span class="event-badge badge-sacred">Sacred</span>
+                </div>
+                <div class="event-row">
+                  <div class="event-date-block"><div class="event-date-num">25</div><div class="event-date-mon">Apr</div></div>
+                  <div class="event-divider"></div>
+                  <div class="event-info"><div class="event-name">Rahu Kaal — Extended</div><div class="event-meta">Avoid all financial commitments today</div></div>
+                  <span class="event-badge badge-caution">Caution</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="section-head">
+              <div class="section-head-title">This Month's Financial Forecast</div>
+              <div class="section-head-link" onclick="showScreen('horoscope',document.querySelector('[onclick*=horoscope]'))">Full Horoscope →</div>
+            </div>
+            <div class="card">
+              <div style="margin-bottom:20px">
+                <div class="eyebrow" style="margin-bottom:4px">April 2026</div>
+                <div style="font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--cream);margin-bottom:8px;">Jupiter–Venus trine activates your 11th house of gains. First three weeks highly favourable for equity investments and long-term wealth building. Avoid speculative trades after the 23rd when Mars enters unfavourable position.</div>
+              </div>
+              <div class="forecast-ring">
+                <div class="ring-label">Wealth Potential</div>
+                <div class="ring-chart"><div class="ring-fill" style="width:82%;background:linear-gradient(90deg,var(--gold),var(--saffron))"></div></div>
+                <div class="ring-meta"><span>Low</span><span style="color:var(--gold)">82% — Strong</span></div>
+              </div>
+              <div class="forecast-ring">
+                <div class="ring-label">Investment Timing</div>
+                <div class="ring-chart"><div class="ring-fill" style="width:75%;background:linear-gradient(90deg,var(--saffron),var(--gold-light))"></div></div>
+                <div class="ring-meta"><span>Low</span><span style="color:var(--saffron)">75% — Good</span></div>
+              </div>
+              <div class="forecast-ring">
+                <div class="ring-label">Risk Caution</div>
+                <div class="ring-chart"><div class="ring-fill" style="width:40%;background:linear-gradient(90deg,var(--green),rgba(72,187,120,0.4))"></div></div>
+                <div class="ring-meta"><span>Low</span><span style="color:var(--green)">40% — Moderate</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MUHURAT CALENDAR -->
+    <div class="screen" id="screen-calendar">
+      <div class="topbar">
+        <div class="topbar-title">Muhurat Calendar</div>
+        <div class="topbar-right">
+          <button class="topbar-btn" id="todayBtn" onclick="goToday()">Today</button>
+          <button class="topbar-btn primary">Export PDF</button>
+        </div>
+      </div>
+      <div class="calendar-layout">
+        <div class="calendar-main">
+          <div class="cal-nav">
+            <button class="cal-nav-btn" onclick="changeMonth(-1)">←</button>
+            <div class="cal-month-title" id="calMonthTitle">April 2026</div>
+            <button class="cal-nav-btn" onclick="changeMonth(1)">→</button>
+          </div>
+          <div class="cal-weekdays">
+            <div class="cal-wd">Sun</div><div class="cal-wd">Mon</div><div class="cal-wd">Tue</div>
+            <div class="cal-wd">Wed</div><div class="cal-wd">Thu</div><div class="cal-wd">Fri</div><div class="cal-wd">Sat</div>
+          </div>
+          <div class="cal-days" id="calDays"></div>
+          <div class="cal-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Shubh Muhurat</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--saffron)"></div>Today</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Rahu Kaal Day</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(72,187,120,0.8)"></div>Festival</div>
+          </div>
+        </div>
+        <div class="calendar-sidebar">
+          <div class="day-detail" id="dayDetail">
+            <div class="day-detail-header">
+              <div class="day-detail-date" id="ddDate">Tuesday, 21 April 2026</div>
+              <div class="day-detail-nakshatra" id="ddNak">🌙 Rohini Nakshatra ♉</div>
+              <div class="day-detail-tithi" id="ddTithi">Tritiya · Shukla Paksha</div>
+            </div>
+            <div class="timing-block">
+              <div class="timing-label">Shubh Muhurat Windows</div>
+              <div class="timing-slot"><div class="timing-dot" style="background:var(--gold)"></div><div class="timing-time">10:48 – 12:24</div><div class="timing-quality">Excellent</div></div>
+              <div class="timing-slot"><div class="timing-dot" style="background:var(--gold);opacity:0.6"></div><div class="timing-time">6:15 – 7:45 AM</div><div class="timing-quality">Good</div></div>
+            </div>
+            <div class="rahu-block">
+              <div class="rahu-label">⚠ Rahu Kaal</div>
+              <div class="rahu-time">3:00 PM – 4:30 PM</div>
+            </div>
+            <div class="timing-block">
+              <div class="timing-label">Best For</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <span class="event-badge badge-auspicious" style="font-size:0.62rem">SIP Start</span>
+                <span class="event-badge badge-auspicious" style="font-size:0.62rem">Gold Purchase</span>
+                <span class="event-badge badge-auspicious" style="font-size:0.62rem">Loan Signing</span>
+              </div>
+            </div>
+            <div class="day-actions">
+              <button class="day-action-btn primary" onclick="showScreen('sip',document.querySelector('[onclick*=sip]'))">Get SIP Muhurat for This Date</button>
+              <button class="day-action-btn">Set Calendar Reminder</button>
+              <button class="day-action-btn">Share Muhurat Card</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIP MUHURAT -->
+    <div class="screen" id="screen-sip">
+      <div class="topbar">
+        <div class="topbar-title">SIP Muhurat Advisor</div>
+        <div class="topbar-right">
+          <button class="topbar-btn">Save Results</button>
+        </div>
+      </div>
+      <div class="sip-layout">
+        <div class="eyebrow">Find Your Auspicious Start Date</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--cream);margin-bottom:24px;">SIP Muhurat <em style="font-style:italic;color:var(--gold-light)">Recommender</em></h2>
+        <div class="card sip-form-card">
+          <div class="form-row-2">
+            <div class="form-row">
+              <label class="form-label">Monthly SIP Amount (₹)</label>
+              <input class="form-input" type="number" placeholder="5,000" id="sipAmount">
+            </div>
+            <div class="form-row">
+              <label class="form-label">Fund Type</label>
+              <select class="form-input" id="fundType">
+                <option>Large Cap Index Fund</option>
+                <option>Mid Cap Growth Fund</option>
+                <option>Small Cap Fund</option>
+                <option>ELSS Tax Saving</option>
+                <option>Debt / Fixed Income</option>
+                <option>International Fund</option>
+                <option>Gold ETF</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-row">
+              <label class="form-label">Investment Horizon</label>
+              <select class="form-input" id="horizon">
+                <option>5–10 Years</option>
+                <option>10–20 Years</option>
+                <option>20+ Years</option>
+                <option>1–3 Years</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Platform Preference</label>
+              <select class="form-input" id="platform">
+                <option>Zerodha Coin</option>
+                <option>Groww</option>
+                <option>Kuvera</option>
+                <option>Paytm Money</option>
+                <option>Any</option>
+              </select>
+            </div>
+          </div>
+          <button class="topbar-btn primary" onclick="findMuhurat()" style="margin-top:8px">Find Auspicious Dates →</button>
+        </div>
+
+        <div class="sip-results" id="sipResults" style="display:none">
+          <div class="sip-result-label">Top 3 Auspicious Dates for Your SIP</div>
+          <div class="sip-date-card best">
+            <div class="sdc-rank">1</div>
+            <div class="sdc-date">
+              <div class="sdc-day">Tuesday, 22 April 2026</div>
+              <div class="sdc-nak">🌙 Rohini Nakshatra · Moon exalted · 2nd house activated</div>
+              <div class="sdc-window">✦ Window: 9:15 AM – 11:30 AM</div>
+            </div>
+            <div class="sdc-score"><div class="score-num">94</div><div class="score-label">/ 100</div></div>
+            <div class="sdc-actions">
+              <button class="sdc-btn primary">Open Zerodha →</button>
+              <button class="sdc-btn">Set Reminder</button>
+            </div>
+          </div>
+          <div class="sip-date-card">
+            <div class="sdc-rank">2</div>
+            <div class="sdc-date">
+              <div class="sdc-day">Friday, 3 May 2026</div>
+              <div class="sdc-nak">⭐ Pushya Nakshatra · Saturn ruled · Wealth building</div>
+              <div class="sdc-window">✦ Window: 7:00 AM – 9:30 AM</div>
+            </div>
+            <div class="sdc-score"><div class="score-num">88</div><div class="score-label">/ 100</div></div>
+            <div class="sdc-actions">
+              <button class="sdc-btn primary">Open Zerodha →</button>
+              <button class="sdc-btn">Set Reminder</button>
+            </div>
+          </div>
+          <div class="sip-date-card">
+            <div class="sdc-rank">3</div>
+            <div class="sdc-date">
+              <div class="sdc-day">Thursday, 15 May 2026</div>
+              <div class="sdc-nak">🌸 Akshaya Tritiya · Most auspicious annual date</div>
+              <div class="sdc-window">✦ Window: All Day · Sacred</div>
+            </div>
+            <div class="sdc-score"><div class="score-num">100</div><div class="score-label">/ 100</div></div>
+            <div class="sdc-actions">
+              <button class="sdc-btn primary">Open Zerodha →</button>
+              <button class="sdc-btn">Set Reminder</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:16px;border-color:rgba(201,168,76,0.2)">
+            <div class="card-title" style="margin-bottom:8px">Why These Dates?</div>
+            <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.7">Based on your Vrishabha Lagna (Taurus Ascendant), the 2nd house of accumulated wealth is activated when the Moon transits Rohini or Pushya. Jupiter's current position in Taurus creates a direct wealth yoga. Starting a SIP during these windows aligns your investment's "birth chart" with the cosmos — a tradition practiced by Indian investors for centuries.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DHAN KUNDLI -->
+    <div class="screen" id="screen-kundli">
+      <div class="topbar">
+        <div class="topbar-title">Dhan Kundli</div>
+        <div class="topbar-right">
+          <button class="topbar-btn">Download PDF</button>
+          <button class="topbar-btn primary" onclick="showScreen('profile',document.querySelector('[onclick*=profile]'))">Edit Birth Details</button>
+        </div>
+      </div>
+      <div class="kundli-layout">
+        <div class="kundli-chart-pane">
+          <div class="eyebrow" style="text-align:center;margin-bottom:12px">Your Financial Birth Chart</div>
+          <svg class="kundli-chart-svg" viewBox="0 0 320 320" fill="none">
+            <!-- Outer border -->
+            <rect x="0" y="0" width="320" height="320" stroke="#C9A84C" stroke-width="0.8" fill="none"/>
+            <!-- Inner diamond -->
+            <polygon points="160,0 320,160 160,320 0,160" stroke="#C9A84C" stroke-width="0.5" fill="none"/>
+            <!-- Diagonals -->
+            <line x1="0" y1="0" x2="320" y2="320" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/>
+            <line x1="320" y1="0" x2="0" y2="320" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/>
+            <line x1="160" y1="0" x2="160" y2="320" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/>
+            <line x1="0" y1="160" x2="320" y2="160" stroke="#C9A84C" stroke-width="0.3" opacity="0.5"/>
+            <!-- Center star -->
+            <polygon points="160,80 192,128 240,128 208,160 220,210 160,180 100,210 112,160 80,128 128,128" stroke="#E8650A" stroke-width="0.8" fill="rgba(232,101,10,0.04)"/>
+            <!-- House numbers + planets -->
+            <text x="160" y="28" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="serif">H-10 ☉♌</text>
+            <text x="280" y="90" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="serif">H-11 ♃♉</text>
+            <text x="292" y="230" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="serif">H-12</text>
+            <text x="160" y="308" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="serif">H-4 ☽♉</text>
+            <text x="28" y="230" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="serif">H-6 ♂</text>
+            <text x="40" y="90" text-anchor="middle" fill="#E8650A" font-size="9" font-family="serif">H-1 ♀♓</text>
+            <!-- Asc marker -->
+            <text x="160" y="170" text-anchor="middle" fill="#E8650A" font-size="10" font-family="Cormorant Garamond, serif">Lagna</text>
+            <text x="160" y="184" text-anchor="middle" fill="#C9A84C" font-size="9" font-family="serif">♉ Taurus</text>
+            <!-- Glow -->
+            <circle cx="160" cy="160" r="60" fill="rgba(232,101,10,0.04)" stroke="rgba(232,101,10,0.15)" stroke-width="0.5"/>
+          </svg>
+          <div class="planet-info-grid">
+            <div class="planet-info-card"><div class="pic-symbol">☉</div><div class="pic-name">Sun</div><div class="pic-sign">Leo ♌</div><div class="pic-house">10th House</div><div class="pic-quality quality-good">Career, Status</div></div>
+            <div class="planet-info-card"><div class="pic-symbol">♃</div><div class="pic-name">Jupiter</div><div class="pic-sign">Taurus ♉</div><div class="pic-house">11th House</div><div class="pic-quality quality-good">Gains, Income</div></div>
+            <div class="planet-info-card"><div class="pic-symbol">♀</div><div class="pic-name">Venus</div><div class="pic-sign">Pisces ♓</div><div class="pic-house">1st House</div><div class="pic-quality quality-good">Exalted — Wealth</div></div>
+            <div class="planet-info-card"><div class="pic-symbol">☽</div><div class="pic-name">Moon</div><div class="pic-sign">Taurus ♉</div><div class="pic-house">4th House</div><div class="pic-quality quality-good">Exalted — Property</div></div>
+          </div>
+        </div>
+        <div class="kundli-info-pane">
+          <div class="archetype-card">
+            <div class="arch-label">Your Financial Archetype</div>
+            <div class="arch-name">The Patient Accumulator</div>
+            <div class="arch-desc">Venus exalted in your 1st house with Jupiter in the 11th house of gains creates a powerful Dhana Yoga. You are naturally inclined towards patient, long-term wealth building. Index funds, real estate, and gold are your natural financial instruments. Avoid day trading and derivatives — they conflict with your planetary constitution.</div>
+          </div>
+          <div style="margin-bottom:20px">
+            <div class="eyebrow" style="margin-bottom:12px">Financial Trait Analysis</div>
+            <div class="trait-item"><div class="trait-header"><div class="trait-name">Wealth Accumulation Tendency</div><div class="trait-pct">91%</div></div><div class="trait-track"><div class="trait-fill" style="width:91%"></div></div><div class="trait-desc">Jupiter–Venus combination in wealth houses. Very strong accumulator.</div></div>
+            <div class="trait-item"><div class="trait-header"><div class="trait-name">Patience & Long-term Vision</div><div class="trait-pct">85%</div></div><div class="trait-track"><div class="trait-fill" style="width:85%"></div></div><div class="trait-desc">Saturn's 10th house aspect gives excellent financial discipline.</div></div>
+            <div class="trait-item"><div class="trait-header"><div class="trait-name">Risk Tolerance</div><div class="trait-pct">38%</div></div><div class="trait-track"><div class="trait-fill" style="width:38%"></div></div><div class="trait-desc">Conservative by nature. Low Mars activation in wealth houses.</div></div>
+            <div class="trait-item"><div class="trait-header"><div class="trait-name">Financial Intuition</div><div class="trait-pct">72%</div></div><div class="trait-track"><div class="trait-fill" style="width:72%"></div></div><div class="trait-desc">Moon exalted in 4th house — strong real estate instinct.</div></div>
+            <div class="trait-item"><div class="trait-header"><div class="trait-name">Timing Intelligence</div><div class="trait-pct">65%</div></div><div class="trait-track"><div class="trait-fill" style="width:65%"></div></div><div class="trait-desc">Mercury placement supports good market entry timing.</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:12px">Best Investment Types For You</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span class="event-badge badge-auspicious">Index Funds</span>
+              <span class="event-badge badge-auspicious">Gold ETF</span>
+              <span class="event-badge badge-auspicious">Real Estate</span>
+              <span class="event-badge badge-auspicious">Dividend Stocks</span>
+              <span class="event-badge badge-caution">Derivatives</span>
+              <span class="event-badge badge-caution">Crypto</span>
+              <span class="event-badge badge-caution">F&O Trading</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOROSCOPE -->
+    <div class="screen" id="screen-horoscope">
+      <div class="topbar">
+        <div class="topbar-title">Financial Horoscope</div>
+        <div class="topbar-right">
+          <button class="topbar-btn">Share</button>
+        </div>
+      </div>
+      <div class="horoscope-layout">
+        <div class="period-tabs">
+          <div class="period-tab active" onclick="setTab(this,'week')">This Week</div>
+          <div class="period-tab" onclick="setTab(this,'month')">This Month</div>
+          <div class="period-tab" onclick="setTab(this,'year')">This Year</div>
+          <div class="period-tab" onclick="setTab(this,'dasha')">Mahadasha</div>
+        </div>
+        <div class="horoscope-grid">
+          <div class="horoscope-main" id="horoscopeContent">
+            <div class="dasha-card">
+              <div class="dc-period">Apr 21 – Apr 27, 2026</div>
+              <div class="dc-title">✦ Strong Wealth Window — Act This Week</div>
+              <div class="dc-text">The Moon's transit through exalted Rohini (Mon–Tue) and then into auspicious Mrigashira (Wed–Thu) creates two powerful financial windows this week. Jupiter's trine to Venus on Thursday particularly activates your Dhana Yoga. Tuesday and Wednesday mornings before noon are the best windows for starting new investments, signing financial agreements, or opening trading accounts.</div>
+              <div class="dc-tags"><span class="dc-tag good">Start SIP</span><span class="dc-tag good">Open Demat</span><span class="dc-tag good">Gold Purchase</span><span class="dc-tag caution">Avoid Fri–Sat</span></div>
+            </div>
+            <div class="dasha-card">
+              <div class="dc-period">April 2026 Overview</div>
+              <div class="dc-title">Jupiter–Venus Trine: Your Best Month This Year</div>
+              <div class="dc-text">April 2026 activates a rare Jupiter-Venus trine that directly aspects your 11th house of gains and 2nd house of accumulated wealth. This is one of the strongest financial months in your current 3-year cycle. Long-term investments made this month carry the best cosmic energy for growth. The first three weeks are especially strong — both the 2nd and the 11th houses are illuminated. After the 23rd, Mars enters a tense aspect — hold positions, don't take new leverage.</div>
+              <div class="dc-tags"><span class="dc-tag good">Excellent Timing</span><span class="dc-tag good">Buy & Hold</span><span class="dc-tag alert">Avoid Leverage After 23rd</span></div>
+            </div>
+            <div class="dasha-card">
+              <div class="dc-period">2026 Annual Forecast</div>
+              <div class="dc-title">Saturn's Sextile Brings Disciplined Wealth</div>
+              <div class="dc-text">Saturn's transit through Aquarius forms a supportive sextile to your Taurus Lagna through 2026. This is the "slow and steady wins the race" energy — not dramatic gains, but rock-solid, compounding wealth. Real estate, government bonds, and large-cap index funds are perfectly aligned with this energy. Avoid get-rich-quick schemes. Your biggest risk is impatience — trust the compound effect.</div>
+              <div class="dc-tags"><span class="dc-tag good">Stable Growth</span><span class="dc-tag good">Real Estate</span><span class="dc-tag caution">Avoid Speculation</span></div>
+            </div>
+          </div>
+          <div class="horoscope-aside">
+            <div class="section-head" style="margin-bottom:12px">
+              <div class="section-head-title">Current Dasha</div>
+            </div>
+            <div class="archetype-card" style="margin-bottom:16px">
+              <div class="arch-label">Mahadasha</div>
+              <div class="arch-name" style="font-size:1.1rem">Venus (Shukra)</div>
+              <div class="arch-desc" style="font-size:0.78rem">2022 – 2042 · Best dasha for wealth accumulation. Venus rules your Lagna — this is a 20-year golden period for financial growth.</div>
+            </div>
+            <div class="card" style="margin-bottom:12px">
+              <div class="card-title" style="font-size:0.9rem;margin-bottom:8px">Antardasha (Sub-period)</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);line-height:1.6">Sun–Venus period until Aug 2026. Career growth directly supports wealth. Solar energy amplifies Venus's financial blessings.</div>
+            </div>
+            <div style="margin-top:16px">
+              <div class="eyebrow" style="margin-bottom:10px">Monthly Wealth Scores</div>
+              <div class="forecast-ring"><div class="ring-label">April</div><div class="ring-chart"><div class="ring-fill" style="width:88%;background:linear-gradient(90deg,var(--gold),var(--saffron))"></div></div><div class="ring-meta"><span></span><span style="color:var(--gold)">88</span></div></div>
+              <div class="forecast-ring"><div class="ring-label">May</div><div class="ring-chart"><div class="ring-fill" style="width:92%;background:linear-gradient(90deg,var(--saffron),var(--gold))"></div></div><div class="ring-meta"><span></span><span style="color:var(--saffron)">92</span></div></div>
+              <div class="forecast-ring"><div class="ring-label">June</div><div class="ring-chart"><div class="ring-fill" style="width:65%;background:linear-gradient(90deg,var(--gold),rgba(201,168,76,0.4))"></div></div><div class="ring-meta"><span></span><span style="color:var(--gold)">65</span></div></div>
+              <div class="forecast-ring"><div class="ring-label">July</div><div class="ring-chart"><div class="ring-fill" style="width:74%;background:linear-gradient(90deg,var(--saffron),var(--gold))"></div></div><div class="ring-meta"><span></span><span style="color:var(--saffron)">74</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="screen" id="screen-alerts">
+      <div class="topbar">
+        <div class="topbar-title">Alerts & Notifications</div>
+        <div class="topbar-right">
+          <button class="topbar-btn">Mark All Read</button>
+          <button class="topbar-btn primary">Settings</button>
+        </div>
+      </div>
+      <div class="alerts-layout">
+        <div class="eyebrow" style="margin-bottom:12px">Today</div>
+        <div class="alert-card" style="border-color:rgba(229,62,62,0.22)">
+          <div class="alert-dot-wrap"><div class="alert-dot" style="background:var(--red)"></div></div>
+          <div style="flex:1">
+            <div class="alert-title">⚠ Rahu Kaal Active in 45 Minutes</div>
+            <div class="alert-body">Rahu Kaal begins at 3:00 PM today (Tuesday). Avoid signing contracts, making large bank transfers, or starting any new financial commitments during 3:00 PM – 4:30 PM.</div>
+            <div class="alert-meta">Today · 2:15 PM</div>
+          </div>
+          <div class="alert-actions"><button class="alert-btn">Dismiss</button></div>
+        </div>
+        <div class="alert-card" style="border-color:var(--border-bright)">
+          <div class="alert-dot-wrap"><div class="alert-dot" style="background:var(--gold)"></div></div>
+          <div style="flex:1">
+            <div class="alert-title">✦ Shubh Muhurat Window Open Now</div>
+            <div class="alert-body">The auspicious window for financial actions is open until 12:24 PM. Rohini Nakshatra with Moon exalted in Taurus — excellent for starting SIPs, purchasing gold, or opening investment accounts.</div>
+            <div class="alert-meta">Today · 10:48 AM</div>
+          </div>
+          <div class="alert-actions"><button class="alert-btn">View</button></div>
+        </div>
+        <div class="eyebrow" style="margin-bottom:12px;margin-top:24px">Upcoming</div>
+        <div class="alert-card">
+          <div class="alert-dot-wrap"><div class="alert-dot" style="background:var(--saffron)"></div></div>
+          <div style="flex:1">
+            <div class="alert-title">📅 SIP Muhurat Window — Apr 22</div>
+            <div class="alert-body">Tomorrow has an excellent Rohini Nakshatra window from 9:15 AM to 11:30 AM. You have 1 pending SIP to start. Reminder set for 9:00 AM tomorrow.</div>
+            <div class="alert-meta">Tomorrow · Apr 22</div>
+          </div>
+          <div class="alert-actions"><button class="alert-btn primary" style="background:var(--saffron);border-color:var(--saffron);color:white">Open Zerodha</button><button class="alert-btn">Snooze</button></div>
+        </div>
+        <div class="alert-card">
+          <div class="alert-dot-wrap"><div class="alert-dot" style="background:var(--gold)"></div></div>
+          <div style="flex:1">
+            <div class="alert-title">🌸 Akshaya Tritiya — 24 Days Away</div>
+            <div class="alert-body">May 15 is Akshaya Tritiya — the most auspicious day of the year for gold purchases and new financial beginnings. All gold bought on this day is believed to multiply. Plan your gold investment now.</div>
+            <div class="alert-meta">May 15, 2026</div>
+          </div>
+          <div class="alert-actions"><button class="alert-btn">Plan Now</button></div>
+        </div>
+        <div class="alert-card">
+          <div class="alert-dot-wrap"><div class="alert-dot" style="background:rgba(240,200,50,0.7)"></div></div>
+          <div style="flex:1">
+            <div class="alert-title">♄ Saturn Retrograde Begins — Jun 5</div>
+            <div class="alert-body">Saturn turns retrograde on June 5. In your chart, this affects the 10th house of career and the 2nd house of finances. Avoid major new financial commitments, business launches, or property deals during Jun 5 – Oct 14.</div>
+            <div class="alert-meta">Jun 5 – Oct 14, 2026</div>
+          </div>
+          <div class="alert-actions"><button class="alert-btn">Mark Calendar</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen" id="screen-profile">
+      <div class="topbar">
+        <div class="topbar-title">My Profile</div>
+        <div class="topbar-right">
+          <button class="topbar-btn primary">Save Changes</button>
+        </div>
+      </div>
+      <div class="profile-layout">
+        <div class="profile-left">
+          <div class="profile-avatar-large">A</div>
+          <div class="profile-name-large">Arjun Sharma</div>
+          <div class="profile-meta-large">arjun.sharma@email.com</div>
+          <div class="subscription-card">
+            <div class="sub-label">Current Plan</div>
+            <div class="sub-name">Nakshatrika Pro ✦</div>
+            <div class="sub-renew">Renews May 21, 2026 · ₹199/mo</div>
+          </div>
+          <div class="birth-detail-grid">
+            <div class="bd-row"><span class="bd-key">Birth Date</span><span class="bd-val">15 Aug 1992</span></div>
+            <div class="bd-row"><span class="bd-key">Birth Time</span><span class="bd-val">6:45 AM</span></div>
+            <div class="bd-row"><span class="bd-key">Birth City</span><span class="bd-val">Mumbai, India</span></div>
+            <div class="bd-row"><span class="bd-key">Lagna</span><span class="bd-val">Vrishabha (Taurus)</span></div>
+            <div class="bd-row"><span class="bd-key">Rashi</span><span class="bd-val">Vrishabha (Taurus)</span></div>
+            <div class="bd-row"><span class="bd-key">Nakshatra</span><span class="bd-val">Rohini Pada 2</span></div>
+            <div class="bd-row"><span class="bd-key">Mahadasha</span><span class="bd-val">Venus 2022–2042</span></div>
+          </div>
+        </div>
+        <div class="profile-right">
+          <div class="settings-group">
+            <div class="settings-label">Notifications</div>
+            <div class="settings-row"><span class="settings-key">Daily Rahu Kaal Alert</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><span class="settings-key">Shubh Muhurat Push Notification</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><span class="settings-key">Planetary Transit Alerts</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><span class="settings-key">SIP Muhurat Reminders</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+            <div class="settings-row"><span class="settings-key">Weekly Financial Forecast</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Preferences</div>
+            <div class="settings-row"><span class="settings-key">Language</span><span class="settings-val">English</span></div>
+            <div class="settings-row"><span class="settings-key">Ayanamsa System</span><span class="settings-val">Lahiri (Chitrapaksha)</span></div>
+            <div class="settings-row"><span class="settings-key">Location (for Rahu Kaal)</span><span class="settings-val">Mumbai, IST</span></div>
+            <div class="settings-row"><span class="settings-key">Primary Broker</span><span class="settings-val">Zerodha</span></div>
+            <div class="settings-row"><span class="settings-key">WhatsApp Updates</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Financial Profile</div>
+            <div class="settings-row"><span class="settings-key">Risk Appetite</span><span class="settings-val">Conservative</span></div>
+            <div class="settings-row"><span class="settings-key">Primary Goal</span><span class="settings-val">Wealth Accumulation</span></div>
+            <div class="settings-row"><span class="settings-key">Investment Horizon</span><span class="settings-val">10–20 Years</span></div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-label">Linked Accounts</div>
+            <div class="settings-row"><span class="settings-key">Zerodha</span><span class="settings-val" style="color:var(--green)">Connected ✓</span></div>
+            <div class="settings-row"><span class="settings-key">Groww</span><span class="settings-val">Connect →</span></div>
+            <div class="settings-row"><span class="settings-key">Google Calendar</span><span class="settings-val" style="color:var(--green)">Connected ✓</span></div>
+          </div>
+          <button class="topbar-btn" style="color:rgba(240,100,100,0.7);border-color:rgba(229,62,62,0.2);margin-top:8px">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Mobile Nav -->
+<nav class="mobile-nav">
+  <div class="mob-nav-items">
+    <div class="mob-nav-item active" onclick="showScreen('dashboard',this);setMobActive(this)"><span class="mob-nav-icon">🏠</span><span class="mob-nav-label">Home</span></div>
+    <div class="mob-nav-item" onclick="showScreen('calendar',this);setMobActive(this)"><span class="mob-nav-icon">📅</span><span class="mob-nav-label">Calendar</span></div>
+    <div class="mob-nav-item" onclick="showScreen('sip',this);setMobActive(this)"><span class="mob-nav-icon">📈</span><span class="mob-nav-label">SIP</span></div>
+    <div class="mob-nav-item" onclick="showScreen('kundli',this);setMobActive(this)"><span class="mob-nav-icon">☸️</span><span class="mob-nav-label">Kundli</span></div>
+    <div class="mob-nav-item" onclick="showScreen('profile',this);setMobActive(this)"><span class="mob-nav-icon">👤</span><span class="mob-nav-label">Profile</span></div>
+  </div>
+</nav>
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx-3.5+'px';cursor.style.top=my-3.5+'px';
+});
+(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx-14+'px';ring.style.top=ry-14+'px';requestAnimationFrame(animRing)})();
+document.querySelectorAll('button,a,.nav-item,.cal-cell,.sip-date-card,.alert-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(3)';ring.style.transform='scale(1.4)';ring.style.borderColor='rgba(232,101,10,.6)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';ring.style.transform='scale(1)';ring.style.borderColor='rgba(201,168,76,.45)';});
+});
+
+// Stars
+const bs=document.getElementById('bgStars');
+for(let i=0;i<120;i++){
+  const s=document.createElement('div');s.className='bg-star';
+  const sz=Math.random()*1.5+.5;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--del:${Math.random()*5}s;--lo:${.03+Math.random()*.07};--hi:${.15+Math.random()*.35}`;
+  bs.appendChild(s);
+}
+
+// Screen navigation
+function showScreen(name, trigger) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.getElementById('mainContent').scrollTop=0;
+  // Activate sidebar nav
+  if(trigger && trigger.classList.contains('nav-item')) trigger.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-item').forEach(n=>{
+      if(n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+name+"'")) n.classList.add('active');
+    });
+  }
+}
+
+function setMobActive(el) {
+  document.querySelectorAll('.mob-nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Calendar
+let calYear=2026,calMonth=3; // April = 3 (0-indexed)
+const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const shubhDays={3:[2,8,11,15,22,28],4:[3,5,12,15,20]};
+const rahuDays={3:[6,13,20,25],4:[2,9,16]};
+
+function renderCalendar(){
+  document.getElementById('calMonthTitle').textContent=months[calMonth]+' '+calYear;
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const today=new Date();
+  const isCurrentMonth=(today.getFullYear()===calYear && today.getMonth()===calMonth);
+  let html='';
+  for(let i=0;i<firstDay;i++) html+='<div class="cal-cell empty"></div>';
+  for(let d=1;d<=daysInMonth;d++){
+    let cls='cal-cell';
+    if(isCurrentMonth && d===today.getDate()) cls+=' today';
+    else if(shubhDays[calMonth] && shubhDays[calMonth].includes(d)) cls+=' shubh';
+    if(rahuDays[calMonth] && rahuDays[calMonth].includes(d)) cls+=' rahu-day';
+    html+=`<div class="${cls}" onclick="selectDay(${d})">${d}</div>`;
+  }
+  document.getElementById('calDays').innerHTML=html;
+}
+
+function selectDay(d) {
+  document.querySelectorAll('.cal-cell').forEach(c=>c.classList.remove('selected'));
+  const cells=document.querySelectorAll('.cal-cell:not(.empty)');
+  cells[d-1].classList.add('selected');
+  const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dayName=dayNames[new Date(calYear,calMonth,d).getDay()];
+  document.getElementById('ddDate').textContent=`${dayName}, ${d} ${months[calMonth]} ${calYear}`;
+  const naks=['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni'];
+  document.getElementById('ddNak').textContent='🌙 '+naks[d%12]+' Nakshatra';
+  document.getElementById('ddTithi').textContent=(d%2===0?'Panchami':'Tritiya')+' · '+((d<15)?'Shukla Paksha':'Krishna Paksha');
+}
+
+function changeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
+function goToday(){calMonth=3;calYear=2026;renderCalendar();}
+renderCalendar();
+
+// SIP Form
+function findMuhurat(){
+  document.getElementById('sipResults').style.display='block';
+  document.getElementById('sipResults').scrollIntoView({behavior:'smooth'});
+}
+
+// Horoscope tabs
+function setTab(el,period){
+  document.querySelectorAll('.period-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// Live clock for muhurat window
+function updateWindow(){
+  const now=new Date();
+  const h=now.getHours(),m=now.getMinutes();
+  const inWindow=(h===10&&m>=48)||(h===11)||(h===12&&m<=24);
+  document.getElementById('windowStatus').textContent=inWindow?'Window active — Act now':'Next window: Tomorrow 9:15 AM';
+  document.getElementById('windowStatus').style.color=inWindow?'var(--green)':'var(--text-muted)';
+}
+updateWindow();
+setInterval(updateWindow,60000);
+</script>
+</body>
+</html>
